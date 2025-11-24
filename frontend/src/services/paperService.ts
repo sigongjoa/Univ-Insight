@@ -1,5 +1,5 @@
 import apiClient from './api'
-import { ResearchPaper, Analysis, PlanBSuggestion, ListResponse } from '../types'
+import type { ResearchPaper, Analysis, PlanBSuggestion, ListResponse } from '../types'
 
 /**
  * Paper Service

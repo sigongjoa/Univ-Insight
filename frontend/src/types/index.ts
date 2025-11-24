@@ -14,31 +14,32 @@ export interface ResearchPaper {
   id: string
   title: string
   university: string
-  date: string
+  date?: string
+  pub_date?: string
   summary_preview: string
   university_tier?: number
 }
 
 export interface CareerPath {
-  companies: string[]
-  job_title: string
-  salary_hint: string
+  companies?: string[]
+  related_companies?: string[]
+  job_title?: string
+  salary_hint?: string
 }
 
 export interface ActionItem {
-  subjects: string[]
-  research_topic: string
+  subjects?: string[]
+  research_topic?: string
 }
 
 export interface Analysis {
-  paper_id: string
-  title: string
-  university: string
-  analysis: {
-    easy_summary: string
-    career_path: CareerPath
-    action_item: ActionItem
-  }
+  paper_id?: string
+  title?: string
+  university?: string
+  analysis?: string
+  easy_summary?: string
+  career_path?: CareerPath
+  action_items?: ActionItem
 }
 
 export interface PlanBSuggestion {
@@ -53,10 +54,12 @@ export interface PlanBSuggestion {
 
 export interface Report {
   id: string
-  user_id: string
-  papers: ResearchPaper[]
-  sent_at: string
-  status: 'pending' | 'sent' | 'failed'
+  user_id?: string
+  papers?: ResearchPaper[]
+  papers_count?: number
+  sent_at?: string
+  created_at?: string
+  status: 'pending' | 'sent' | 'failed' | 'completed'
   notion_page_url?: string
 }
 

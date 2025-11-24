@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { reportService } from '../services/reportService'
 import { useAuthStore } from '../store/authStore'
-import { Report } from '../types'
+import type { Report } from '../types'
 
 /**
  * Report Page
@@ -173,7 +173,7 @@ export default function ReportPage() {
                           리포트 #{report.id.split('-')[1]}
                         </span>
                         <span className="text-sm text-gray-600">
-                          {new Date(report.created_at).toLocaleDateString('ko-KR', {
+                          {report.created_at && new Date(report.created_at).toLocaleDateString('ko-KR', {
                             year: 'numeric',
                             month: 'long',
                             day: 'numeric',
@@ -210,7 +210,7 @@ export default function ReportPage() {
                         <div className="bg-white p-4 rounded border border-gray-200">
                           <p className="text-sm text-gray-600 mb-1">생성일</p>
                           <p className="text-sm font-semibold text-gray-900">
-                            {new Date(report.created_at).toLocaleDateString('ko-KR')}
+                            {report.created_at && new Date(report.created_at).toLocaleDateString('ko-KR')}
                           </p>
                         </div>
                       </div>

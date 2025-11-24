@@ -8,7 +8,6 @@ for research papers using ChromaDB as the vector database.
 import os
 from typing import List, Dict, Optional
 import chromadb
-from chromadb.config import Settings as ChromaSettings
 
 
 class VectorStore:
@@ -35,17 +34,32 @@ class VectorStore:
         if persist_enabled and not os.path.exists(persist_dir):
             os.makedirs(persist_dir, exist_ok=True)
 
-        # Initialize ChromaDB client
-        if persist_enabled:
-            self.client = chromadb.Client(
-                ChromaSettings(
-                    chroma_db_impl="duckdb+parquet",
-                    persist_directory=persist_dir,
-                    anonymized_telemetry=False,
+        # Initialize ChromaDB client using new API
+        try:
+            # Try using the new Chroma API
+            if persist_enabled:
+                self.client = chromadb.PersistentClient(
+                    path=persist_dir
                 )
-            )
-        else:
-            self.client = chromadb.Client()
+            else:
+                self.client = chromadb.EphemeralClient()
+        except AttributeError:
+            # Fallback to old API for older versions
+            try:
+                if persist_enabled:
+                    from chromadb.config import Settings as ChromaSettings
+                    self.client = chromadb.Client(
+                        ChromaSettings(
+                            chroma_db_impl="duckdb+parquet",
+                            persist_directory=persist_dir,
+                            anonymized_telemetry=False,
+                        )
+                    )
+                else:
+                    self.client = chromadb.Client()
+            except Exception:
+                # Final fallback: just use in-memory client
+                self.client = chromadb.EphemeralClient()
 
         # Get or create collection
         self.collection = self.client.get_or_create_collection(

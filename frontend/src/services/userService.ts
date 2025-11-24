@@ -1,5 +1,5 @@
 import apiClient from './api'
-import { User, UpdateProfileRequest } from '../types'
+import type { User, UpdateProfileRequest } from '../types'
 
 /**
  * User Service

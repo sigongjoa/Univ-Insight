@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
-import { userService } from '../services/userService'
-import { User } from '../types'
+import type { User } from '../types'
 
 /**
  * Login Page

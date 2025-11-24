@@ -1,5 +1,4 @@
 import apiClient from './api'
-import { Report } from '../types'
 
 /**
  * Report Service

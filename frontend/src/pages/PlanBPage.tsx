@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { paperService } from '../services/paperService'
-import { PlanBSuggestion } from '../types'
+import type { PlanBSuggestion } from '../types'
 import { useAuthStore } from '../store/authStore'
 
 /**

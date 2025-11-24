@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { paperService } from '../services/paperService'
 import { useAuthStore } from '../store/authStore'
-import { ResearchPaper, Analysis } from '../types'
+import type { ResearchPaper, Analysis } from '../types'
 
 interface DetailModalProps {
   isOpen: boolean
@@ -34,7 +34,7 @@ function DetailModal({ isOpen, paper, analysis, onClose, onViewPlanB }: DetailMo
 
           <div className="mb-4">
             <p className="text-sm text-gray-600 mb-2">
-              🏫 {paper.university} | 📅 {new Date(paper.pub_date).toLocaleDateString('ko-KR')}
+              🏫 {paper.university} | 📅 {(paper.pub_date || paper.date) && new Date(paper.pub_date || paper.date || '').toLocaleDateString('ko-KR')}
             </p>
           </div>
 
@@ -326,7 +326,7 @@ export default function ResearchPage() {
                     </h3>
                     <div className="flex gap-4 text-sm text-gray-600 mb-3">
                       <span>🏫 {paper.university}</span>
-                      <span>📅 {new Date(paper.pub_date).toLocaleDateString('ko-KR')}</span>
+                      <span>📅 {(paper.pub_date || paper.date) && new Date(paper.pub_date || paper.date || '').toLocaleDateString('ko-KR')}</span>
                     </div>
                   </div>
                 </div>
