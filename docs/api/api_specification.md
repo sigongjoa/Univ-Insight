@@ -3,6 +3,13 @@
 **Base URL:** `/api/v1`
 **Version:** 1.0.0
 
+## 0. Authentication (인증)
+
+### Kakao Login Callback
+*   **Endpoint:** `GET /auth/kakao/callback`
+*   **Description:** 카카오 로그인 후 리다이렉트 처리 및 JWT 발급.
+*   **Response:** `{"access_token": "...", "token_type": "bearer"}`
+
 ## 1. User Management (학생/학부모 관리)
 
 ### Register/Update User
@@ -103,6 +110,7 @@
 ### Get Plan B Suggestions
 *   **Endpoint:** `GET /research/{paper_id}/plan-b`
 *   **Description:** 특정 연구와 유사한 주제를 가진 타 대학(진입장벽이 다른) 연구 추천.
+*   **Logic:** `Similarity > 0.8 AND Target_Univ_Tier > Current_Univ_Tier` (Tier 숫자가 클수록 입결이 낮음)
 *   **Response:**
     ```json
     [

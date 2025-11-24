@@ -39,3 +39,10 @@ We will start with **KAIST** (School of Computing) as the primary target for the
 *   **Retries:** 3 times with 2-second delay.
 *   **User-Agent:** Rotate User-Agent string to avoid blocking.
 *   **Robots.txt:** Respect `Disallow` rules if present.
+
+## 5. Fallback Strategy (Resilience)
+
+If CSS selectors fail (e.g., site renewal):
+1.  **Primary:** Use defined CSS selectors.
+2.  **Secondary (Fallback):** Extract full `<body>` text and use a lightweight LLM (e.g., GPT-3.5-turbo) to parse the main content.
+    *   *Prompt:* "Extract the main article content from this HTML text, excluding navigation and footers."

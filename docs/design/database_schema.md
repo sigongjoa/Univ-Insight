@@ -56,6 +56,7 @@ Stores the raw data crawled from university websites.
 | `url` | `String(512)` | Unique, Not Null | Original URL (prevents duplicates) |
 | `title` | `String(255)` | Not Null | Paper/Article Title |
 | `university` | `String(50)` | Not Null | e.g., "KAIST", "SNU" |
+| `university_tier` | `Integer` | Default=1 | Tier for Plan B logic (1=Top, 5=Low) |
 | `department` | `String(50)` | Nullable | e.g., "CS", "Bio" |
 | `pub_date` | `Date` | Nullable | Date published on the website |
 | `content_raw` | `Text` | Not Null | Full text content (cleaned HTML) |
@@ -84,6 +85,8 @@ Stores user profiles and preferences.
 | `id` | `String(50)` | PK | Kakao ID or UUID |
 | `name` | `String(50)` | Not Null | User Name |
 | `role` | `Enum` | 'student', 'parent' | User Type |
+| `parent_id` | `String(50)` | FK(`users.id`), Nullable | Link to Parent User (if student) |
+| `child_id` | `String(50)` | FK(`users.id`), Nullable | Link to Student User (if parent) |
 | `interests` | `JSON` | Default=`[]` | List of keywords e.g., `["AI", "Bio"]` |
 | `notion_page_id` | `String(100)` | Nullable | ID of their Notion Dashboard |
 

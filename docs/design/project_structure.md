@@ -27,7 +27,8 @@ Univ-Insight/
 │   │   ├── crawler.py         # Playwright Logic
 │   │   ├── llm.py             # OpenAI/Claude Interface
 │   │   ├── vector_store.py    # ChromaDB Interface
-│   │   └── notification.py    # Notion/Kakao Interface
+│   │   ├── notification.py    # Notion/Kakao Interface
+│   │   └── scheduler.py       # APScheduler for periodic tasks
 │   ├── api/                   # FastAPI Routes
 │   │   ├── __init__.py
 │   │   ├── main.py            # App Entrypoint
