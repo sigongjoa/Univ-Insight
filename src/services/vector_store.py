@@ -35,31 +35,12 @@ class VectorStore:
             os.makedirs(persist_dir, exist_ok=True)
 
         # Initialize ChromaDB client using new API
-        try:
-            # Try using the new Chroma API
-            if persist_enabled:
-                self.client = chromadb.PersistentClient(
-                    path=persist_dir
-                )
-            else:
-                self.client = chromadb.EphemeralClient()
-        except AttributeError:
-            # Fallback to old API for older versions
-            try:
-                if persist_enabled:
-                    from chromadb.config import Settings as ChromaSettings
-                    self.client = chromadb.Client(
-                        ChromaSettings(
-                            chroma_db_impl="duckdb+parquet",
-                            persist_directory=persist_dir,
-                            anonymized_telemetry=False,
-                        )
-                    )
-                else:
-                    self.client = chromadb.Client()
-            except Exception:
-                # Final fallback: just use in-memory client
-                self.client = chromadb.EphemeralClient()
+        if persist_enabled:
+            self.client = chromadb.PersistentClient(
+                path=persist_dir
+            )
+        else:
+            self.client = chromadb.EphemeralClient()
 
         # Get or create collection
         self.collection = self.client.get_or_create_collection(
@@ -84,20 +65,16 @@ class VectorStore:
         Returns:
             True if successful, False otherwise
         """
-        try:
-            if metadata is None:
-                metadata = {}
+        if metadata is None:
+            metadata = {}
 
-            # Add to collection
-            self.collection.add(
-                ids=[paper_id],
-                documents=[content],
-                metadatas=[metadata]
-            )
-            return True
-        except Exception as e:
-            print(f"[VectorStore] Error adding embedding: {e}")
-            return False
+        # Add to collection
+        self.collection.add(
+            ids=[paper_id],
+            documents=[content],
+            metadatas=[metadata]
+        )
+        return True
 
     def search(
         self,
@@ -116,32 +93,28 @@ class VectorStore:
         Returns:
             List of dicts with 'id', 'content', 'similarity', and 'metadata'
         """
-        try:
-            results = self.collection.query(
-                query_texts=[query],
-                n_results=k,
-                include=["documents", "metadatas", "distances"]
-            )
+        results = self.collection.query(
+            query_texts=[query],
+            n_results=k,
+            include=["documents", "metadatas", "distances"]
+        )
 
-            # Convert distances to similarity scores (1 - distance for cosine)
-            papers = []
-            if results["ids"] and len(results["ids"]) > 0:
-                for idx, doc_id in enumerate(results["ids"][0]):
-                    distance = results["distances"][0][idx]
-                    similarity = 1 - distance  # Convert distance to similarity
+        # Convert distances to similarity scores (1 - distance for cosine)
+        papers = []
+        if results["ids"] and len(results["ids"]) > 0:
+            for idx, doc_id in enumerate(results["ids"][0]):
+                distance = results["distances"][0][idx]
+                similarity = 1 - distance  # Convert distance to similarity
 
-                    if similarity >= threshold:
-                        papers.append({
-                            "id": doc_id,
-                            "content": results["documents"][0][idx] if results["documents"] else "",
-                            "similarity": similarity,
-                            "metadata": results["metadatas"][0][idx] if results["metadatas"] else {}
-                        })
+                if similarity >= threshold:
+                    papers.append({
+                        "id": doc_id,
+                        "content": results["documents"][0][idx] if results["documents"] else "",
+                        "similarity": similarity,
+                        "metadata": results["metadatas"][0][idx] if results["metadatas"] else {}
+                    })
 
-            return papers
-        except Exception as e:
-            print(f"[VectorStore] Error during search: {e}")
-            return []
+        return papers
 
     def delete_embedding(self, paper_id: str) -> bool:
         """
@@ -153,12 +126,8 @@ class VectorStore:
         Returns:
             True if successful, False otherwise
         """
-        try:
-            self.collection.delete(ids=[paper_id])
-            return True
-        except Exception as e:
-            print(f"[VectorStore] Error deleting embedding: {e}")
-            return False
+        self.collection.delete(ids=[paper_id])
+        return True
 
     def update_embedding(
         self,
@@ -177,27 +146,19 @@ class VectorStore:
         Returns:
             True if successful, False otherwise
         """
-        try:
-            if metadata is None:
-                metadata = {}
+        if metadata is None:
+            metadata = {}
 
-            self.collection.update(
-                ids=[paper_id],
-                documents=[content],
-                metadatas=[metadata]
-            )
-            return True
-        except Exception as e:
-            print(f"[VectorStore] Error updating embedding: {e}")
-            return False
+        self.collection.update(
+            ids=[paper_id],
+            documents=[content],
+            metadatas=[metadata]
+        )
+        return True
 
     def get_collection_count(self) -> int:
         """Get the number of embeddings in the collection"""
-        try:
-            return self.collection.count()
-        except Exception as e:
-            print(f"[VectorStore] Error getting count: {e}")
-            return 0
+        return self.collection.count()
 
     def persist(self) -> bool:
         """
@@ -206,12 +167,8 @@ class VectorStore:
         Returns:
             True if successful, False otherwise
         """
-        try:
-            self.client.persist()
-            return True
-        except Exception as e:
-            print(f"[VectorStore] Error persisting: {e}")
-            return False
+        self.client.persist()
+        return True
 
     def clear_collection(self) -> bool:
         """
@@ -220,14 +177,10 @@ class VectorStore:
         Returns:
             True if successful, False otherwise
         """
-        try:
-            # Delete the collection and recreate it
-            self.client.delete_collection(name=self.collection.name)
-            self.collection = self.client.get_or_create_collection(
-                name=self.collection.name,
-                metadata={"hnsw:space": "cosine"}
-            )
-            return True
-        except Exception as e:
-            print(f"[VectorStore] Error clearing collection: {e}")
-            return False
+        # Delete the collection and recreate it
+        self.client.delete_collection(name=self.collection.name)
+        self.collection = self.client.get_or_create_collection(
+            name=self.collection.name,
+            metadata={"hnsw:space": "cosine"}
+        )
+        return True

@@ -47,35 +47,30 @@ def create_or_update_user(
         role: "student" or "parent"
         interests: List of interests (e.g., ["AI", "Biology"])
     """
-    try:
-        # Validate role
-        if role not in ["student", "parent"]:
-            raise HTTPException(status_code=400, detail="Invalid role")
+    # Validate role
+    if role not in ["student", "parent"]:
+        raise HTTPException(status_code=400, detail="Invalid role")
 
-        # Check if user exists
-        user = db.query(User).filter(User.id == user_id).first()
+    # Check if user exists
+    user = db.query(User).filter(User.id == user_id).first()
 
-        if user:
-            # Update existing user
-            user.name = name
-            user.role = UserRole[role.upper()]
-            user.interests = interests
-        else:
-            # Create new user
-            user = User(
-                id=user_id,
-                name=name,
-                role=UserRole[role.upper()],
-                interests=interests
-            )
-            db.add(user)
+    if user:
+        # Update existing user
+        user.name = name
+        user.role = UserRole[role.upper()]
+        user.interests = interests
+    else:
+        # Create new user
+        user = User(
+            id=user_id,
+            name=name,
+            role=UserRole[role.upper()],
+            interests=interests
+        )
+        db.add(user)
 
-        db.commit()
-        return {"status": "success", "user_id": user.id}
-
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
+    db.commit()
+    return {"status": "success", "user_id": user.id}
 
 
 @router.get("/users/{user_id}")
@@ -221,42 +216,37 @@ def generate_personalized_report(
         )
 
     # Create report
-    try:
-        report = Report(
-            id=str(uuid.uuid4()),
-            user_id=user_id,
-            status=ReportStatus.SENT
+    report = Report(
+        id=str(uuid.uuid4()),
+        user_id=user_id,
+        status=ReportStatus.SENT
+    )
+    db.add(report)
+    db.flush()
+
+    # Add papers to report (through ReportPaper junction table)
+    from src.domain.models import ReportPaper
+    for rec in recommendations:
+        report_paper = ReportPaper(
+            report_id=report.id,
+            paper_id=rec["paper_id"]
         )
-        db.add(report)
-        db.flush()
+        db.add(report_paper)
 
-        # Add papers to report (through ReportPaper junction table)
-        from src.domain.models import ReportPaper
-        for rec in recommendations:
-            report_paper = ReportPaper(
-                report_id=report.id,
-                paper_id=rec["paper_id"]
-            )
-            db.add(report_paper)
+    db.commit()
 
-        db.commit()
-
-        return {
-            "status": "success",
-            "report_id": report.id,
-            "papers": [
-                {
-                    "paper_id": rec["paper_id"],
-                    "title": rec["title"],
-                    "summary": rec["summary"][:200]
-                }
-                for rec in recommendations
-            ]
-        }
-
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
+    return {
+        "status": "success",
+        "report_id": report.id,
+        "papers": [
+            {
+                "paper_id": rec["paper_id"],
+                "title": rec["title"],
+                "summary": rec["summary"][:200]
+            }
+            for rec in recommendations
+        ]
+    }
 
 
 @router.get("/research/{paper_id}/plan-b")
