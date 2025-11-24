@@ -1,22 +1,99 @@
+import asyncio
+import re
+from typing import Optional
+from datetime import datetime
 from src.domain.schemas import ResearchPaper
 
+# Try importing crawl4ai, handle if not installed yet
+try:
+    from crawl4ai import AsyncWebCrawler
+except ImportError:
+    AsyncWebCrawler = None
+
+
 class BaseCrawler:
+    """Base crawler interface"""
     def crawl(self, url: str) -> ResearchPaper:
         raise NotImplementedError
 
+
+class KaistCrawler(BaseCrawler):
+    """
+    Crawler for KAIST (Korea Advanced Institute of Science and Technology)
+    research papers and news.
+    """
+
+    def crawl(self, url: str = "https://cs.kaist.ac.kr/news/research") -> Optional[ResearchPaper]:
+        """
+        Crawl KAIST research page and extract paper information.
+
+        Args:
+            url: Target URL to crawl
+
+        Returns:
+            ResearchPaper object or None if crawling fails
+        """
+        if not AsyncWebCrawler:
+            print("   [Error] crawl4ai not installed.")
+            return None
+        return asyncio.run(self._crawl_async(url))
+
+    async def _crawl_async(self, url: str) -> Optional[ResearchPaper]:
+        """Async crawling implementation"""
+        print(f"   [KaistCrawler] Starting crawl for {url}...")
+
+        try:
+            async with AsyncWebCrawler(verbose=False) as crawler:
+                result = await crawler.arun(
+                    url=url,
+                    timeout=30,
+                    wait_until="networkidle"
+                )
+
+                if not result.success:
+                    print(f"   [KaistCrawler] Failed to crawl: {result.error_message}")
+                    return None
+
+                print(f"   [KaistCrawler] Successfully crawled. Content length: {len(result.markdown)}")
+
+                # Extract title from the page
+                title = self._extract_title(result.markdown, url)
+
+                # Create ResearchPaper object
+                paper = ResearchPaper(
+                    source="KAIST CS",
+                    title=title,
+                    content=result.markdown[:5000],  # Limit content to first 5000 chars
+                    date=datetime.now().isoformat(),
+                    url=url
+                )
+
+                return paper
+
+        except Exception as e:
+            print(f"   [KaistCrawler] Error during crawling: {str(e)}")
+            return None
+
+    @staticmethod
+    def _extract_title(content: str, url: str) -> str:
+        """Extract title from markdown content"""
+        # Try to find the first heading
+        match = re.search(r'#\s+(.+)', content)
+        if match:
+            return match.group(1).strip()
+        # Fallback to URL-based title
+        return f"Research from {url}"
+
+
 class MockCrawler(BaseCrawler):
+    """Mock crawler for testing without actual web requests"""
+
     def crawl(self, url: str) -> ResearchPaper:
-        # Mock data representing a crawled paper
+        """Return mock research paper"""
         return ResearchPaper(
-            source="KAIST",
+            source="KAIST (Mock)",
             title="Efficient Transformer Architectures for Mobile Devices",
-            content="""
-            Abstract:
-            Recent advances in Transformer models have led to significant improvements in NLP tasks. 
-            However, their high computational cost makes them difficult to deploy on mobile devices. 
-            In this paper, we propose a novel architecture that reduces parameter count by 40% while maintaining 95% of the accuracy.
-            We utilize depth-wise separable convolutions and a modified attention mechanism...
-            """,
-            date="2024-05-20",
+            content="This research focuses on optimizing transformer models to run efficiently on mobile devices. Traditional transformers are computationally expensive, but this work introduces novel quantization and pruning techniques that reduce model size by 70% while maintaining 95% accuracy. The approach combines knowledge distillation with hardware-aware optimization, making it practical for deployment on smartphones and IoT devices.",
+            date=datetime.now().isoformat(),
             url=url
         )

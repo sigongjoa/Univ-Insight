@@ -1,1 +1,14 @@
 pydantic
+pydantic-settings
+crawl4ai
+ollama
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+chromadb
+python-dotenv
+requests
+apscheduler
+pytest
+pytest-asyncio
