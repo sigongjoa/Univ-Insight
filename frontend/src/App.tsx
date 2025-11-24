@@ -1,6 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import HomePage from './pages/HomePage'
+import ResearchPage from './pages/ResearchPage'
+import ReportPage from './pages/ReportPage'
+import ProfilePage from './pages/ProfilePage'
+import PlanBPage from './pages/PlanBPage'
 import './App.css'
 
 function App() {
@@ -9,7 +13,10 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<HomePage />} />
-        {/* More routes will be added later */}
+        <Route path="/research" element={<ResearchPage />} />
+        <Route path="/research/:paperId/plan-b" element={<PlanBPage />} />
+        <Route path="/reports" element={<ReportPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
   )
