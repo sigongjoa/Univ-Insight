@@ -1,6 +1,6 @@
 # 고려대학교 크롤러 분석 보고서
 
-**분석 날짜:** 2025-11-25T14:43:22.526658
+**분석 날짜:** 2025-11-25T14:49:08.522066
 **대학 웹사이트:** https://www.korea.ac.kr
 
 ---
@@ -14,18 +14,13 @@
 
 **크롤링 성공:**
 - ✅ HTML 다운로드 완료
-- ✅ 파일 크기: 28246 bytes
+- ✅ 파일 크기: 28244 bytes
 - ✅ 텍스트 추출: 2803 chars
 
 **정보 추출 결과:**
-- 👨‍🏫 교수: 3명
+- 👨‍🏫 교수: 0명
 - 🔬 연구실: 6개
 - 📄 논문: 2개
-
-**추출된 교수:**
-- 고려대학교 (cscoi@korea.ac.kr)
-- 고려대학교 (infograd@korea.ac.kr)
-- 교수소개 ()
 
 **추출된 연구실:**
 - [안전] 연구실 안전 명사초청 특강 진행 안내(11/27 목) / Notice on Inv
@@ -64,6 +59,9 @@
 
 ## ⚠️ 식별된 문제점
 
+
+### 학과 1:
+- No professors extracted - page may not contain faculty information or text is image-based
 
 
 ---

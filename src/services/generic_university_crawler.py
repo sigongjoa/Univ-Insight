@@ -25,6 +25,8 @@ except ImportError:
     CrawlResult = None
 
 from src.services.improved_info_extractor import ImprovedInfoExtractor
+from src.services.cache_service import get_cache_service
+from src.services.js_renderer import JSRendererOptimizer
 
 logger = logging.getLogger(__name__)
 
@@ -32,19 +34,23 @@ logger = logging.getLogger(__name__)
 class GenericUniversityCrawler:
     """crawl4ai 기반 범용 대학 크롤러"""
 
-    def __init__(self, use_playwright: bool = True, timeout: int = 15):
+    def __init__(self, use_playwright: bool = True, timeout: int = 15, use_cache: bool = True):
         """
         크롤러 초기화
 
         Args:
             use_playwright: JavaScript 렌더링 지원 여부 (동적 페이지용)
             timeout: 크롤링 타임아웃 (초)
+            use_cache: 응답 캐싱 사용 여부
         """
         self.crawler = None
         self.use_playwright = use_playwright
         self.timeout = timeout
+        self.use_cache = use_cache
         self.session_cache = {}  # URL → HTML 캐시
-        logger.info("🚀 GenericUniversityCrawler 초기화")
+        self.cache_service = get_cache_service() if use_cache else None
+        self.js_optimizer = JSRendererOptimizer()
+        logger.info("🚀 GenericUniversityCrawler 초기화 (캐싱=%s, Playwright=%s)" % (use_cache, use_playwright))
 
     async def initialize(self):
         """AsyncWebCrawler 비동기 초기화"""
@@ -72,12 +78,13 @@ class GenericUniversityCrawler:
             except Exception as e:
                 logger.warning(f"⚠️  크롤러 종료 중 오류: {e}")
 
-    async def crawl_page(self, url: str) -> Optional[str]:
+    async def crawl_page(self, url: str, use_cache: bool = True) -> Optional[str]:
         """
-        페이지 크롤링 및 HTML 반환
+        페이지 크롤링 및 HTML 반환 (캐싱 지원)
 
         Args:
             url: 크롤링할 URL
+            use_cache: 캐시 사용 여부
 
         Returns:
             HTML 콘텐츠 또는 None (실패 시)
@@ -85,8 +92,20 @@ class GenericUniversityCrawler:
         if not self.crawler:
             await self.initialize()
 
+        # 캐시 확인
+        if use_cache and self.cache_service:
+            cached_html = self.cache_service.get(url)
+            if cached_html:
+                logger.info(f"   📦 캐시에서 로드: {url[:50]}...")
+                return cached_html
+
         try:
             logger.info(f"   📡 크롤링: {url}")
+
+            # JS 렌더링 최적화 설정
+            render_config = self.js_optimizer.optimize_rendering_config(
+                "<html></html>", url  # 빠른 판단용
+            )
 
             result = await asyncio.wait_for(
                 self.crawler.arun(
@@ -97,8 +116,14 @@ class GenericUniversityCrawler:
             )
 
             if result.success:
-                logger.info(f"   ✅ 크롤링 성공 ({len(result.html)} bytes)")
-                return result.html
+                html = result.html
+                logger.info(f"   ✅ 크롤링 성공 ({len(html)} bytes)")
+
+                # 캐시 저장
+                if use_cache and self.cache_service:
+                    self.cache_service.set(url, html)
+
+                return html
             else:
                 logger.warning(f"   ⚠️  크롤링 실패: {result.error_message}")
                 return None

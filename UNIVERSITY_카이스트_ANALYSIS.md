@@ -1,6 +1,6 @@
 # 카이스트 크롤러 분석 보고서
 
-**분석 날짜:** 2025-11-25T14:43:20.279846
+**분석 날짜:** 2025-11-25T14:49:06.320959
 **대학 웹사이트:** https://www.kaist.ac.kr
 
 ---
@@ -20,10 +20,7 @@
 **정보 추출 결과:**
 - 👨‍🏫 교수: 0명
 - 🔬 연구실: 0개
-- 📄 논문: 1개
-
-**추출된 논문:**
-- Copyright(C) 2020, Korea Advanced Institute of Science and T
+- 📄 논문: 0개
 
 
 ---
@@ -57,6 +54,7 @@
 ### 학과 1:
 - No professors extracted - page may not contain faculty information or text is image-based
 - No labs extracted - labs may be on separate pages or use different keywords
+- No papers extracted - papers may be on professor pages or external links
 
 
 ---

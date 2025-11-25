@@ -9,6 +9,7 @@ GenericUniversityCrawler의 패턴 매칭을 보완하는 고급 추출 기능
 
 import re
 import logging
+import asyncio
 from typing import List, Dict, Optional, Set
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
@@ -17,11 +18,17 @@ from src.services.university_selectors import UniversitySelectors
 
 logger = logging.getLogger(__name__)
 
+# OCR 서비스 (선택사항)
+try:
+    from src.services.ocr_service import OCRService
+except ImportError:
+    OCRService = None
+
 
 class ImprovedInfoExtractor:
     """향상된 정보 추출 엔진"""
 
-    def __init__(self, html: str, base_url: str = "", university_domain: str = ""):
+    def __init__(self, html: str, base_url: str = "", university_domain: str = "", use_ocr: bool = False):
         """
         초기화
 
@@ -29,12 +36,16 @@ class ImprovedInfoExtractor:
             html: 파싱할 HTML
             base_url: 상대 URL을 절대 URL로 변환할 기본 URL
             university_domain: 대학 도메인 (선택자 매칭용)
+            use_ocr: OCR 사용 여부 (이미지 기반 정보 추출)
         """
         self.html = html
         self.base_url = base_url
         self.university_domain = university_domain
+        self.use_ocr = use_ocr
         self.soup = BeautifulSoup(html, 'html.parser')
         self.text = self.soup.get_text()
+        self.ocr_service = None
+        self.ocr_text = ""
 
         # 대학별 선택자 로드
         self.selector = UniversitySelectors.get_selector_by_domain(university_domain)

@@ -12,8 +12,8 @@
 | 대학 | 교수 | 연구실 | 논문 | 상태 | 주요 이슈 |
 |------|------|--------|------|------|----------|
 | 서울대학교 | 0 | 0 | 0 | failed | Failed to crawl page... |
-| 카이스트 | 0 | 0 | 1 | completed | No professors extracted - page may not c... |
-| 고려대학교 | 3 | 6 | 2 | completed | None... |
+| 카이스트 | 0 | 0 | 0 | completed | No professors extracted - page may not c... |
+| 고려대학교 | 0 | 6 | 2 | completed | No professors extracted - page may not c... |
 
 ---
 
@@ -54,7 +54,7 @@
 - 텍스트 길이: 356 chars
 - 교수: 0명
 - 연구실: 0개
-- 논문: 1개
+- 논문: 0개
 
 **페이지 구조:**
 - 테이블: 0개
@@ -67,6 +67,7 @@
 **식별된 문제:**
 - ⚠️  No professors extracted - page may not contain faculty information or text is image-based
 - ⚠️  No labs extracted - labs may be on separate pages or use different keywords
+- ⚠️  No papers extracted - papers may be on professor pages or external links
 
 **페이지 구조상 이슈:**
 - 🔴 매우 적은 텍스트 (500자 미만) - 이미지 기반 페이지 가능성
@@ -80,9 +81,9 @@
 #### 학과 1: https://cs.korea.ac.kr
 
 **크롤링 결과:**
-- HTML 크기: 28246 bytes
+- HTML 크기: 28244 bytes
 - 텍스트 길이: 2803 chars
-- 교수: 3명
+- 교수: 0명
 - 연구실: 6개
 - 논문: 2개
 
@@ -93,6 +94,9 @@
 - 헤딩: 9개
 - 이미지: 19개
 - 이메일 주소: 2개
+
+**식별된 문제:**
+- ⚠️  No professors extracted - page may not contain faculty information or text is image-based
 
 
 ---

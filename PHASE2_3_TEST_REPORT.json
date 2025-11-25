@@ -1,0 +1,713 @@
+{
+  "sequential": {
+    "results": [
+      {
+        "university": "서울대학교",
+        "url": "https://engineering.snu.ac.kr/cse",
+        "timestamp": "2025-11-25T15:10:03.556153",
+        "professors": [
+          {
+            "name": "Prof 0",
+            "email": "prof0@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 1",
+            "email": "prof1@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 2",
+            "email": "prof2@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 3",
+            "email": "prof3@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 4",
+            "email": "prof4@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 5",
+            "email": "prof5@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 6",
+            "email": "prof6@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 7",
+            "email": "prof7@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 8",
+            "email": "prof8@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 9",
+            "email": "prof9@서울대학교.ac.kr"
+          }
+        ],
+        "papers": [
+          {
+            "title": "Paper 0"
+          },
+          {
+            "title": "Paper 1"
+          },
+          {
+            "title": "Paper 2"
+          },
+          {
+            "title": "Paper 3"
+          },
+          {
+            "title": "Paper 4"
+          },
+          {
+            "title": "Paper 5"
+          },
+          {
+            "title": "Paper 6"
+          }
+        ],
+        "extraction_stats": {
+          "professors_count": 10,
+          "labs_count": 0,
+          "papers_count": 7,
+          "pages_crawled": 2
+        }
+      },
+      {
+        "university": "KAIST",
+        "url": "https://www.kaist.ac.kr/cs",
+        "timestamp": "2025-11-25T15:10:03.556173",
+        "professors": [
+          {
+            "name": "Prof 0",
+            "email": "prof0@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 1",
+            "email": "prof1@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 2",
+            "email": "prof2@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 3",
+            "email": "prof3@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 4",
+            "email": "prof4@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 5",
+            "email": "prof5@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 6",
+            "email": "prof6@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 7",
+            "email": "prof7@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 8",
+            "email": "prof8@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 9",
+            "email": "prof9@KAIST.ac.kr"
+          }
+        ],
+        "papers": [
+          {
+            "title": "Paper 0"
+          },
+          {
+            "title": "Paper 1"
+          },
+          {
+            "title": "Paper 2"
+          },
+          {
+            "title": "Paper 3"
+          },
+          {
+            "title": "Paper 4"
+          },
+          {
+            "title": "Paper 5"
+          },
+          {
+            "title": "Paper 6"
+          }
+        ],
+        "extraction_stats": {
+          "professors_count": 10,
+          "labs_count": 0,
+          "papers_count": 7,
+          "pages_crawled": 2
+        }
+      },
+      {
+        "university": "고려대학교",
+        "url": "https://cs.korea.ac.kr",
+        "timestamp": "2025-11-25T15:10:03.556179",
+        "professors": [
+          {
+            "name": "Prof 0",
+            "email": "prof0@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 1",
+            "email": "prof1@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 2",
+            "email": "prof2@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 3",
+            "email": "prof3@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 4",
+            "email": "prof4@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 5",
+            "email": "prof5@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 6",
+            "email": "prof6@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 7",
+            "email": "prof7@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 8",
+            "email": "prof8@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 9",
+            "email": "prof9@고려대학교.ac.kr"
+          }
+        ],
+        "papers": [
+          {
+            "title": "Paper 0"
+          },
+          {
+            "title": "Paper 1"
+          },
+          {
+            "title": "Paper 2"
+          },
+          {
+            "title": "Paper 3"
+          },
+          {
+            "title": "Paper 4"
+          },
+          {
+            "title": "Paper 5"
+          },
+          {
+            "title": "Paper 6"
+          }
+        ],
+        "extraction_stats": {
+          "professors_count": 10,
+          "labs_count": 0,
+          "papers_count": 7,
+          "pages_crawled": 2
+        }
+      }
+    ],
+    "time_seconds": 0.01083827018737793
+  },
+  "parallel": {
+    "results": [
+      {
+        "university": "서울대학교",
+        "url": "https://engineering.snu.ac.kr/cse",
+        "timestamp": "2025-11-25T15:10:03.556153",
+        "professors": [
+          {
+            "name": "Prof 0",
+            "email": "prof0@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 1",
+            "email": "prof1@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 2",
+            "email": "prof2@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 3",
+            "email": "prof3@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 4",
+            "email": "prof4@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 5",
+            "email": "prof5@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 6",
+            "email": "prof6@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 7",
+            "email": "prof7@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 8",
+            "email": "prof8@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 9",
+            "email": "prof9@서울대학교.ac.kr"
+          }
+        ],
+        "papers": [
+          {
+            "title": "Paper 0"
+          },
+          {
+            "title": "Paper 1"
+          },
+          {
+            "title": "Paper 2"
+          },
+          {
+            "title": "Paper 3"
+          },
+          {
+            "title": "Paper 4"
+          },
+          {
+            "title": "Paper 5"
+          },
+          {
+            "title": "Paper 6"
+          }
+        ],
+        "extraction_stats": {
+          "professors_count": 10,
+          "labs_count": 0,
+          "papers_count": 7,
+          "pages_crawled": 2
+        }
+      },
+      {
+        "university": "KAIST",
+        "url": "https://www.kaist.ac.kr/cs",
+        "timestamp": "2025-11-25T15:10:03.556173",
+        "professors": [
+          {
+            "name": "Prof 0",
+            "email": "prof0@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 1",
+            "email": "prof1@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 2",
+            "email": "prof2@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 3",
+            "email": "prof3@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 4",
+            "email": "prof4@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 5",
+            "email": "prof5@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 6",
+            "email": "prof6@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 7",
+            "email": "prof7@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 8",
+            "email": "prof8@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 9",
+            "email": "prof9@KAIST.ac.kr"
+          }
+        ],
+        "papers": [
+          {
+            "title": "Paper 0"
+          },
+          {
+            "title": "Paper 1"
+          },
+          {
+            "title": "Paper 2"
+          },
+          {
+            "title": "Paper 3"
+          },
+          {
+            "title": "Paper 4"
+          },
+          {
+            "title": "Paper 5"
+          },
+          {
+            "title": "Paper 6"
+          }
+        ],
+        "extraction_stats": {
+          "professors_count": 10,
+          "labs_count": 0,
+          "papers_count": 7,
+          "pages_crawled": 2
+        }
+      },
+      {
+        "university": "고려대학교",
+        "url": "https://cs.korea.ac.kr",
+        "timestamp": "2025-11-25T15:10:03.556179",
+        "professors": [
+          {
+            "name": "Prof 0",
+            "email": "prof0@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 1",
+            "email": "prof1@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 2",
+            "email": "prof2@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 3",
+            "email": "prof3@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 4",
+            "email": "prof4@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 5",
+            "email": "prof5@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 6",
+            "email": "prof6@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 7",
+            "email": "prof7@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 8",
+            "email": "prof8@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 9",
+            "email": "prof9@고려대학교.ac.kr"
+          }
+        ],
+        "papers": [
+          {
+            "title": "Paper 0"
+          },
+          {
+            "title": "Paper 1"
+          },
+          {
+            "title": "Paper 2"
+          },
+          {
+            "title": "Paper 3"
+          },
+          {
+            "title": "Paper 4"
+          },
+          {
+            "title": "Paper 5"
+          },
+          {
+            "title": "Paper 6"
+          }
+        ],
+        "extraction_stats": {
+          "professors_count": 10,
+          "labs_count": 0,
+          "papers_count": 7,
+          "pages_crawled": 2
+        }
+      }
+    ],
+    "time_seconds": 0.0043353080749511715
+  },
+  "cached": {
+    "results": [
+      {
+        "university": "서울대학교",
+        "url": "https://engineering.snu.ac.kr/cse",
+        "timestamp": "2025-11-25T15:10:03.556153",
+        "professors": [
+          {
+            "name": "Prof 0",
+            "email": "prof0@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 1",
+            "email": "prof1@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 2",
+            "email": "prof2@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 3",
+            "email": "prof3@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 4",
+            "email": "prof4@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 5",
+            "email": "prof5@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 6",
+            "email": "prof6@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 7",
+            "email": "prof7@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 8",
+            "email": "prof8@서울대학교.ac.kr"
+          },
+          {
+            "name": "Prof 9",
+            "email": "prof9@서울대학교.ac.kr"
+          }
+        ],
+        "papers": [
+          {
+            "title": "Paper 0"
+          },
+          {
+            "title": "Paper 1"
+          },
+          {
+            "title": "Paper 2"
+          },
+          {
+            "title": "Paper 3"
+          },
+          {
+            "title": "Paper 4"
+          },
+          {
+            "title": "Paper 5"
+          },
+          {
+            "title": "Paper 6"
+          }
+        ],
+        "extraction_stats": {
+          "professors_count": 10,
+          "labs_count": 0,
+          "papers_count": 7,
+          "pages_crawled": 2
+        }
+      },
+      {
+        "university": "KAIST",
+        "url": "https://www.kaist.ac.kr/cs",
+        "timestamp": "2025-11-25T15:10:03.556173",
+        "professors": [
+          {
+            "name": "Prof 0",
+            "email": "prof0@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 1",
+            "email": "prof1@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 2",
+            "email": "prof2@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 3",
+            "email": "prof3@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 4",
+            "email": "prof4@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 5",
+            "email": "prof5@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 6",
+            "email": "prof6@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 7",
+            "email": "prof7@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 8",
+            "email": "prof8@KAIST.ac.kr"
+          },
+          {
+            "name": "Prof 9",
+            "email": "prof9@KAIST.ac.kr"
+          }
+        ],
+        "papers": [
+          {
+            "title": "Paper 0"
+          },
+          {
+            "title": "Paper 1"
+          },
+          {
+            "title": "Paper 2"
+          },
+          {
+            "title": "Paper 3"
+          },
+          {
+            "title": "Paper 4"
+          },
+          {
+            "title": "Paper 5"
+          },
+          {
+            "title": "Paper 6"
+          }
+        ],
+        "extraction_stats": {
+          "professors_count": 10,
+          "labs_count": 0,
+          "papers_count": 7,
+          "pages_crawled": 2
+        }
+      },
+      {
+        "university": "고려대학교",
+        "url": "https://cs.korea.ac.kr",
+        "timestamp": "2025-11-25T15:10:03.556179",
+        "professors": [
+          {
+            "name": "Prof 0",
+            "email": "prof0@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 1",
+            "email": "prof1@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 2",
+            "email": "prof2@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 3",
+            "email": "prof3@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 4",
+            "email": "prof4@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 5",
+            "email": "prof5@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 6",
+            "email": "prof6@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 7",
+            "email": "prof7@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 8",
+            "email": "prof8@고려대학교.ac.kr"
+          },
+          {
+            "name": "Prof 9",
+            "email": "prof9@고려대학교.ac.kr"
+          }
+        ],
+        "papers": [
+          {
+            "title": "Paper 0"
+          },
+          {
+            "title": "Paper 1"
+          },
+          {
+            "title": "Paper 2"
+          },
+          {
+            "title": "Paper 3"
+          },
+          {
+            "title": "Paper 4"
+          },
+          {
+            "title": "Paper 5"
+          },
+          {
+            "title": "Paper 6"
+          }
+        ],
+        "extraction_stats": {
+          "professors_count": 10,
+          "labs_count": 0,
+          "papers_count": 7,
+          "pages_crawled": 2
+        }
+      }
+    ],
+    "time_seconds": 0.010053167343139649
+  },
+  "performance_metrics": {
+    "speedup_parallel": 2.5,
+    "speedup_cached": 1.078095073665917,
+    "cache_stats": {
+      "memory_entries": 3,
+      "memory_size": 9800,
+      "disk_entries": 3,
+      "disk_size": 13121,
+      "total_size": 22921,
+      "ttl_hours": 24
+    }
+  }
+}

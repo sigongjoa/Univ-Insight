@@ -16,21 +16,26 @@ logger = logging.getLogger(__name__)
 
 
 class MultipageCrawler:
-    """다중 페이지 크롤링을 지원하는 크롤러"""
+    """다중 페이지 크롤링을 지원하는 크롤러 (병렬 처리 지원)"""
 
-    def __init__(self, max_depth: int = 3, max_professors_per_dept: int = 10):
+    def __init__(self, max_depth: int = 3, max_professors_per_dept: int = 10, parallel_crawl: bool = False, max_concurrent: int = 3):
         """
         초기화
 
         Args:
             max_depth: 최대 크롤링 깊이 (1=학과페이지, 2=교수링크, 3=개별교수페이지)
             max_professors_per_dept: 부서당 최대 교수 수
+            parallel_crawl: 병렬 크롤링 사용 여부
+            max_concurrent: 최대 동시 크롤링 수
         """
         self.crawler = GenericUniversityCrawler()
         self.max_depth = max_depth
         self.max_professors_per_dept = max_professors_per_dept
+        self.parallel_crawl = parallel_crawl
+        self.max_concurrent = max_concurrent
         self.visited_urls: Set[str] = set()
         self.start_time = None
+        self.semaphore = asyncio.Semaphore(max_concurrent)  # 동시성 제어
 
     async def initialize(self):
         """크롤러 초기화"""
@@ -189,27 +194,44 @@ class MultipageCrawler:
 
     async def crawl_multiple_departments(
         self,
-        departments: List[Tuple[str, str]]  # [(url, name), ...]
+        departments: List[Tuple[str, str]],  # [(url, name), ...]
+        parallel: bool = False
     ) -> List[Dict]:
         """
-        여러 학과 동시 크롤링 (순차)
+        여러 학과 크롤링 (순차 또는 병렬)
 
         Args:
             departments: [(url, name), ...] 리스트
+            parallel: 병렬 처리 여부
 
         Returns:
             [department_result, ...]
         """
-        results = []
+        if not parallel or not self.parallel_crawl:
+            # 순차 처리
+            results = []
+            for dept_url, dept_name in departments:
+                result = await self.crawl_department(dept_url, dept_name)
+                results.append(result)
+                await asyncio.sleep(2)  # 속도 제한
+            return results
+        else:
+            # 병렬 처리
+            tasks = [
+                self._crawl_with_semaphore(dept_url, dept_name)
+                for dept_url, dept_name in departments
+            ]
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            return [r for r in results if not isinstance(r, Exception)]
 
-        for dept_url, dept_name in departments:
-            result = await self.crawl_department(dept_url, dept_name)
-            results.append(result)
-
-            # 속도 제한
-            await asyncio.sleep(2)
-
-        return results
+    async def _crawl_with_semaphore(self, dept_url: str, dept_name: str) -> Dict:
+        """세마포어를 사용한 동시성 제어 크롤링"""
+        async with self.semaphore:
+            try:
+                return await self.crawl_department(dept_url, dept_name)
+            except Exception as e:
+                logger.error(f"❌ 병렬 크롤링 오류: {e}")
+                return {"error": str(e)}
 
 
 # ===================== 사용 예시 =====================
