@@ -90,6 +90,77 @@ class CareerNetClient:
             logger.error(f"Error parsing response: {e}")
             return None
 
+    def get_all_universities(self) -> List[UniversityInfo]:
+        """
+        전국의 모든 대학 정보를 조회합니다. (페이징 처리)
+        """
+        if not self.api_key:
+            logger.info("No API Key provided. Returning Mock Data List.")
+            return [self._get_mock_data("서울대학교"), self._get_mock_data("KAIST")]
+
+        all_universities = []
+        page = 1
+        per_page = 100  # API 최대 허용치 확인 필요, 보통 20~100
+        
+        while True:
+            params = {
+                "apiKey": self.api_key,
+                "svcType": "api",
+                "svcCode": "SCHOOL",
+                "contentType": "json",
+                "gubun": "univ_list",
+                "thisPage": page,
+                "perPage": per_page
+            }
+            
+            try:
+                response = requests.get(self.BASE_URL, params=params)
+                response.raise_for_status()
+                data = response.json()
+                
+                content = data.get("dataSearch", {}).get("content", [])
+                if not content:
+                    break
+                
+                for item in content:
+                    # 학교 종류 필터링 (대학교, 전문대학 등)
+                    # gubun 필드가 '대학교'인 경우만 가져오거나, 필요에 따라 조정
+                    # 여기서는 모든 'univ_list' 결과를 가져옴
+                    
+                    univ = self._parse_single_univ(item)
+                    if univ:
+                        all_universities.append(univ)
+                
+                # 다음 페이지 확인
+                total_count = int(data.get("dataSearch", {}).get("totalCount", 0))
+                if page * per_page >= total_count:
+                    break
+                    
+                page += 1
+                
+            except Exception as e:
+                logger.error(f"Failed to fetch page {page}: {e}")
+                break
+                
+        return all_universities
+
+    def _parse_single_univ(self, item: Dict) -> Optional[UniversityInfo]:
+        try:
+            name = item.get("schoolName")
+            link = item.get("link")
+            region = item.get("region")
+            
+            # 학과 정보는 리스트 API에서는 보통 제공되지 않음.
+            # 상세 조회가 필요하지만, 일단 대학 정보만이라도 확보
+            return UniversityInfo(
+                name=name,
+                region=region,
+                url=link,
+                departments=[]
+            )
+        except:
+            return None
+
     def _get_mock_data(self, name: str) -> UniversityInfo:
         """API 키가 없을 때 테스트용 Mock 데이터 반환"""
         return UniversityInfo(

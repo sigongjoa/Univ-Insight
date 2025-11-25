@@ -18,15 +18,14 @@ class BaseCrawler:
         raise NotImplementedError
 
 
-class KaistCrawler(BaseCrawler):
+class UniversityCrawler(BaseCrawler):
     """
-    Crawler for KAIST (Korea Advanced Institute of Science and Technology)
-    research papers and news.
+    Generic Crawler for University research pages.
     """
 
-    def crawl(self, url: str = "https://cs.kaist.ac.kr/news/research") -> Optional[ResearchPaper]:
+    def crawl(self, url: str) -> Optional[ResearchPaper]:
         """
-        Crawl KAIST research page and extract paper information.
+        Crawl university page and extract paper information.
 
         Args:
             url: Target URL to crawl
@@ -41,7 +40,7 @@ class KaistCrawler(BaseCrawler):
 
     async def _crawl_async(self, url: str) -> Optional[ResearchPaper]:
         """Async crawling implementation"""
-        print(f"   [KaistCrawler] Starting crawl for {url}...")
+        print(f"   [UniversityCrawler] Starting crawl for {url}...")
 
         try:
             async with AsyncWebCrawler(verbose=False) as crawler:
@@ -52,10 +51,10 @@ class KaistCrawler(BaseCrawler):
                 )
 
                 if not result.success:
-                    print(f"   [KaistCrawler] Failed to crawl: {result.error_message}")
+                    print(f"   [UniversityCrawler] Failed to crawl: {result.error_message}")
                     return None
 
-                print(f"   [KaistCrawler] Successfully crawled. Content length: {len(result.markdown)}")
+                print(f"   [UniversityCrawler] Successfully crawled. Content length: {len(result.markdown)}")
 
                 # Extract title from the page
                 title = self._extract_title(result.markdown, url)
@@ -65,8 +64,8 @@ class KaistCrawler(BaseCrawler):
                     id=str(uuid.uuid4()),
                     url=url,
                     title=title,
-                    university="KAIST",
-                    department="CS",
+                    university="Unknown", # Should be passed or inferred
+                    department="Unknown",
                     pub_date=datetime.now().date(),
                     content_raw=result.markdown[:8000],  # Limit content size
                     crawled_at=datetime.now()
@@ -75,7 +74,7 @@ class KaistCrawler(BaseCrawler):
                 return paper
 
         except Exception as e:
-            print(f"   [KaistCrawler] Error during crawling: {str(e)}")
+            print(f"   [UniversityCrawler] Error during crawling: {str(e)}")
             return None
 
     @staticmethod

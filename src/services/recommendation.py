@@ -67,8 +67,8 @@ class RecommendationService:
                 ).first()
 
                 if paper:
-                    analysis = db.query(AnalysisResult).filter(
-                        AnalysisResult.paper_id == paper.id
+                    analysis = db.query(PaperAnalysis).filter(
+                        PaperAnalysis.paper_id == paper.id
                     ).first()
 
                     recommendations.append({
@@ -140,8 +140,8 @@ class RecommendationService:
                 candidate_paper.university_tier.value >=
                 original_paper.university_tier.value + tier_gap):
 
-                analysis = db.query(AnalysisResult).filter(
-                    AnalysisResult.paper_id == candidate_paper.id
+                analysis = db.query(PaperAnalysis).filter(
+                    PaperAnalysis.paper_id == candidate_paper.id
                 ).first()
 
                 plan_b_suggestions.append({
@@ -211,8 +211,8 @@ class RecommendationService:
 
         for paper in papers:
             # Use title + summary as the embedding text
-            analysis = db.query(AnalysisResult).filter(
-                AnalysisResult.paper_id == paper.id
+            analysis = db.query(PaperAnalysis).filter(
+                PaperAnalysis.paper_id == paper.id
             ).first()
 
             embedding_text = paper.title + " "

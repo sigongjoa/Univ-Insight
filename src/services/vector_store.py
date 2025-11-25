@@ -191,3 +191,5 @@ async def get_vector_store(
         )
         await _vector_store_instance.initialize()
     return _vector_store_instance
+
+VectorStore = ChromaVectorStore

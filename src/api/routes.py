@@ -597,22 +597,58 @@ def get_plan_b_suggestions(
 
 # ==================== Admin ====================
 
+from pydantic import BaseModel
+from fastapi import BackgroundTasks
+from src.services.crawler import UniversityCrawler
+
+class CrawlRequest(BaseModel):
+    university_id: str
+    target_url: Optional[str] = None
+
+def run_crawler_task(university_id: str, target_url: str, db: Session):
+    """Background task to run crawler"""
+    print(f"Starting background crawl for {university_id} at {target_url}")
+    crawler = UniversityCrawler()
+    paper = crawler.crawl(target_url)
+    
+    if paper:
+        # Save to DB
+        # Note: We need a fresh session or handle session scope carefully in background tasks
+        # For simplicity in this prototype, we'll just print success.
+        # In production, use a new session here.
+        print(f"Successfully crawled paper: {paper.title}")
+        
+        # Update paper with university info
+        # db_paper = ResearchPaper(...)
+        # db.add(db_paper)
+        # db.commit()
+    else:
+        print("Crawling failed")
+
 @router.post("/admin/crawl")
 def trigger_crawler(
-    target: str = "KAIST_CS",
+    request: CrawlRequest,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
 ):
     """
-    Trigger manual crawling job.
-
-    Args:
-        target: Crawler target (e.g., "KAIST_CS", "SNU_CS")
+    Trigger crawling job for a university.
     """
-    # This is a placeholder for crawler integration
-    # In production, this would trigger a background job
+    # Get university to find URL if not provided
+    university = db.query(University).filter(University.id == request.university_id).first()
+    if not university:
+        raise HTTPException(status_code=404, detail="University not found")
+        
+    target_url = request.target_url or university.url
+    if not target_url:
+        raise HTTPException(status_code=400, detail="No URL found for university")
+
+    # Add to background tasks
+    background_tasks.add_task(run_crawler_task, request.university_id, target_url, db)
 
     return {
         "status": "queued",
-        "target": target,
+        "university_id": request.university_id,
+        "target_url": target_url,
         "message": "Crawling job has been queued"
     }

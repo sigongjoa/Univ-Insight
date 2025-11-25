@@ -5,6 +5,8 @@ import ResearchPage from './pages/ResearchPage'
 import ReportPage from './pages/ReportPage'
 import ProfilePage from './pages/ProfilePage'
 import PlanBPage from './pages/PlanBPage'
+import UniversityList from './pages/UniversityList'
+import UniversityDetail from './pages/UniversityDetail'
 import './App.css'
 
 function App() {
@@ -13,6 +15,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<HomePage />} />
+        <Route path="/universities" element={<UniversityList />} />
+        <Route path="/universities/:id" element={<UniversityDetail />} />
         <Route path="/research" element={<ResearchPage />} />
         <Route path="/research/:paperId/plan-b" element={<PlanBPage />} />
         <Route path="/reports" element={<ReportPage />} />
