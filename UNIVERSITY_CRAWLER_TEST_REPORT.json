@@ -1,0 +1,184 @@
+[
+  {
+    "university": "서울대학교",
+    "url": "https://www.snu.ac.kr",
+    "timestamp": "2025-11-25T14:43:16.005309",
+    "departments": [
+      {
+        "url": "https://engineering.snu.ac.kr/cse",
+        "status": "failed",
+        "html_size": 0,
+        "text_length": 0,
+        "professors": [],
+        "labs": [],
+        "papers": [],
+        "extraction_stats": {},
+        "issues": [
+          "Failed to crawl page"
+        ],
+        "raw_html_sample": ""
+      }
+    ]
+  },
+  {
+    "university": "카이스트",
+    "url": "https://www.kaist.ac.kr",
+    "timestamp": "2025-11-25T14:43:20.279846",
+    "departments": [
+      {
+        "url": "https://www.kaist.ac.kr/cs",
+        "status": "completed",
+        "html_size": 2959,
+        "text_length": 356,
+        "professors": [],
+        "labs": [],
+        "papers": [
+          {
+            "title": "Copyright(C) 2020, Korea Advanced Institute of Science and Technology, All Rights Reserved",
+            "extraction_method": "title_pattern",
+            "confidence": 0.5
+          }
+        ],
+        "extraction_stats": {
+          "professors_count": 0,
+          "labs_count": 0,
+          "papers_count": 1,
+          "total_extracted": 1
+        },
+        "issues": [
+          "No professors extracted - page may not contain faculty information or text is image-based",
+          "No labs extracted - labs may be on separate pages or use different keywords"
+        ],
+        "raw_html_sample": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\"><head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n<title>Error Page</title>\n\n<script language=\"javascript\">\nfunction fncGoAfterErrorPage(){\n    history.back(-2);\n}\n</script>\n<style type=\"text/css\">\n\nhtml,body{position:relative;display:table;width:100%;height:100%;text-align:center;margin:0;padding:0;box-sizing",
+        "structure_analysis": {
+          "has_tables": false,
+          "has_lists": false,
+          "has_links": true,
+          "email_count": 0,
+          "heading_count": 1,
+          "potential_issues": [
+            "매우 적은 텍스트 (500자 미만) - 이미지 기반 페이지 가능성",
+            "이메일 주소 없음 - 교수 정보가 다른 페이지에 있을 가능성",
+            "구조화된 데이터 없음 (테이블/리스트) - 정보가 분산되어 있을 가능성"
+          ],
+          "element_counts": {
+            "tables": 0,
+            "lists": 0,
+            "links": 2,
+            "headings": 1,
+            "images": 0,
+            "divs": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "university": "고려대학교",
+    "url": "https://www.korea.ac.kr",
+    "timestamp": "2025-11-25T14:43:22.526658",
+    "departments": [
+      {
+        "url": "https://cs.korea.ac.kr",
+        "status": "completed",
+        "html_size": 28246,
+        "text_length": 2803,
+        "professors": [
+          {
+            "name": "고려대학교",
+            "email": "cscoi@korea.ac.kr",
+            "extraction_method": "email_based",
+            "confidence": 0.8
+          },
+          {
+            "name": "고려대학교",
+            "email": "infograd@korea.ac.kr",
+            "extraction_method": "email_based",
+            "confidence": 0.8
+          },
+          {
+            "name": "교수소개",
+            "email": "",
+            "title": "교수",
+            "extraction_method": "title_keyword",
+            "confidence": 0.7
+          }
+        ],
+        "labs": [
+          {
+            "description": "[안전] 연구실 안전 명사초청 특강 진행 안내(11/27 목) / Notice on Invited Expert Lecture on Laboratory Safety (Thu, Nov",
+            "keyword": "laboratory",
+            "extraction_method": "keyword_based",
+            "confidence": 0.6
+          },
+          {
+            "description": "0,user-scalable=no\">",
+            "keyword": "lab",
+            "extraction_method": "keyword_based",
+            "confidence": 0.6
+          },
+          {
+            "description": "<input type=\"radio\" id=\"agree01\" name=\"agreeCheck\" value=\"Y\"><label for=\"agree01\">동의</label>",
+            "keyword": "lab",
+            "extraction_method": "keyword_based",
+            "confidence": 0.6
+          },
+          {
+            "description": "<input type=\"radio\" id=\"agree02\" name=\"agreeCheck\" value=\"N\"><label for=\"agree02\">비동의</label>",
+            "keyword": "lab",
+            "extraction_method": "keyword_based",
+            "confidence": 0.6
+          },
+          {
+            "description": "kr/info/research/labintro_cs",
+            "keyword": "lab",
+            "extraction_method": "keyword_based",
+            "confidence": 0.6
+          },
+          {
+            "description": "do\" title=\"연구실소개\" target=\"_blank\">연구실소개</a>",
+            "keyword": "연구실",
+            "extraction_method": "keyword_based",
+            "confidence": 0.6
+          }
+        ],
+        "papers": [
+          {
+            "title": "E-Mail : infograd@korea",
+            "extraction_method": "title_pattern",
+            "confidence": 0.5
+          },
+          {
+            "title": "Copyrights (C)2017 KOREA University",
+            "extraction_method": "title_pattern",
+            "confidence": 0.5
+          }
+        ],
+        "extraction_stats": {
+          "professors_count": 3,
+          "labs_count": 6,
+          "papers_count": 2,
+          "total_extracted": 11
+        },
+        "issues": [],
+        "raw_html_sample": "<!DOCTYPE html><html lang=\"ko\"><head>\n<title>고려대학교 컴퓨터학과</title>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\">\n<meta http-equiv=\"Content-Style-Type\" content=\"text/css\">\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no\">\n<meta name=\"robots\" content=\"index,follow\">\n<meta name=\"descriptio",
+        "structure_analysis": {
+          "has_tables": false,
+          "has_lists": true,
+          "has_links": true,
+          "email_count": 2,
+          "heading_count": 9,
+          "potential_issues": [],
+          "element_counts": {
+            "tables": 0,
+            "lists": 30,
+            "links": 89,
+            "headings": 9,
+            "images": 19,
+            "divs": 33
+          }
+        }
+      }
+    ]
+  }
+]
