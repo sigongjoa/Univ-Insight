@@ -15,8 +15,8 @@ class OllamaLLM(BaseLLM):
     def analyze(self, paper: ResearchPaper) -> AnalysisResult:
         print(f"   [OllamaLLM] Analyzing content with {self.model}...")
 
-        # Use full_text or abstract, whichever is available
-        content_to_analyze = paper.full_text or paper.abstract or paper.title
+        # Use content from Pydantic schema (already converted from SQLAlchemy model if needed)
+        content_to_analyze = paper.content or paper.title
 
         # Construct the prompt
         prompt = f"""

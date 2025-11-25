@@ -1,0 +1,41 @@
+
+{
+  "dataSearch": [
+    {
+      "schoolName": "서울대학교",
+      "majorName": "공과대학",
+      "departmentName": "컴퓨터공학부",
+      "majorGroup": "공학",
+      "schoolNameKo": "서울대학교",
+      "majorNameKo": "공과대학",
+      "departmentNameKo": "컴퓨터공학부"
+    },
+    {
+      "schoolName": "KAIST",
+      "majorName": "자연과학대학",
+      "departmentName": "물리학과",
+      "majorGroup": "자연과학",
+      "schoolNameKo": "한국과학기술원",
+      "majorNameKo": "자연과학대학",
+      "departmentNameKo": "물리학과"
+    },
+    {
+      "schoolName": "연세대학교",
+      "majorName": "의과대학",
+      "departmentName": "의예과",
+      "majorGroup": "의학",
+      "schoolNameKo": "연세대학교",
+      "majorNameKo": "의과대학",
+      "departmentNameKo": "의예과"
+    },
+    {
+      "schoolName": "포항공과대학교",
+      "majorName": "공과대학",
+      "departmentName": "전자전기공학과",
+      "majorGroup": "공학",
+      "schoolNameKo": "포항공과대학교",
+      "majorNameKo": "공과대학",
+      "departmentNameKo": "전자전기공학과"
+    }
+  ]
+}

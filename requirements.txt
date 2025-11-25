@@ -12,3 +12,4 @@ requests
 apscheduler
 pytest
 pytest-asyncio
+pytest-cov
