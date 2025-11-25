@@ -1,0 +1,207 @@
+[
+  {
+    "university": "서울대학교",
+    "url": "https://engineering.snu.ac.kr/cse",
+    "timestamp": "2025-11-25T14:57:42.282902",
+    "department": "서울대학교 컴퓨터학과",
+    "professors": [],
+    "labs": [],
+    "papers": [],
+    "professor_pages": [],
+    "pages_crawled": 0,
+    "extraction_stats": {}
+  },
+  {
+    "university": "KAIST",
+    "url": "https://www.kaist.ac.kr/cs",
+    "timestamp": "2025-11-25T14:57:42.799407",
+    "department": "KAIST 컴퓨터학과",
+    "professors": [],
+    "labs": [],
+    "papers": [],
+    "professor_pages": [],
+    "pages_crawled": 0,
+    "extraction_stats": {}
+  },
+  {
+    "university": "고려대학교",
+    "url": "https://cs.korea.ac.kr",
+    "timestamp": "2025-11-25T14:57:46.873435",
+    "department": "고려대학교 컴퓨터학과",
+    "professors": [
+      {
+        "name": "김진규",
+        "email": "jinkyukim@korea.ac.kr",
+        "extraction_method": "email_based",
+        "confidence": 0.8
+      },
+      {
+        "name": "김영근",
+        "email": "younggeun_kim@korea.ac.kr",
+        "extraction_method": "email_based",
+        "confidence": 0.8
+      },
+      {
+        "name": "강재우",
+        "email": "kangj@korea.ac.kr",
+        "extraction_method": "email_based",
+        "confidence": 0.8
+      },
+      {
+        "name": "구건재",
+        "email": "gunjaekoo@korea.ac.kr",
+        "extraction_method": "email_based",
+        "confidence": 0.8
+      },
+      {
+        "name": "김동선",
+        "email": "darkrsw@korea.ac.kr",
+        "extraction_method": "email_based",
+        "confidence": 0.8
+      },
+      {
+        "name": "강형엽",
+        "email": "siamiz_hkang@korea.ac.kr",
+        "extraction_method": "email_based",
+        "confidence": 0.8
+      },
+      {
+        "name": "강성구",
+        "email": "seongkukang@korea.ac.kr",
+        "extraction_method": "email_based",
+        "confidence": 0.8
+      },
+      {
+        "name": "곽정호",
+        "email": "jeonghokwak@korea.ac.kr",
+        "extraction_method": "email_based",
+        "confidence": 0.8
+      },
+      {
+        "name": "김정현",
+        "email": "gjkim@korea.ac.kr",
+        "extraction_method": "email_based",
+        "confidence": 0.8
+      },
+      {
+        "name": "김세연",
+        "email": "seyeon625@korea.ac.kr",
+        "extraction_method": "email_based",
+        "confidence": 0.8
+      }
+    ],
+    "labs": [
+      {
+        "description": "[안전] 연구실 안전 명사초청 특강 진행 안내(11/27 목) / Notice on Invited Expert Lecture on Laboratory Safety (Thu, Nov",
+        "keyword": "laboratory",
+        "extraction_method": "keyword_based",
+        "confidence": 0.6
+      },
+      {
+        "description": "0,user-scalable=no\">",
+        "keyword": "lab",
+        "extraction_method": "keyword_based",
+        "confidence": 0.6
+      },
+      {
+        "description": "<input type=\"radio\" id=\"agree01\" name=\"agreeCheck\" value=\"Y\"><label for=\"agree01\">동의</label>",
+        "keyword": "lab",
+        "extraction_method": "keyword_based",
+        "confidence": 0.6
+      },
+      {
+        "description": "<input type=\"radio\" id=\"agree02\" name=\"agreeCheck\" value=\"N\"><label for=\"agree02\">비동의</label>",
+        "keyword": "lab",
+        "extraction_method": "keyword_based",
+        "confidence": 0.6
+      },
+      {
+        "description": "kr/info/research/labintro_cs",
+        "keyword": "lab",
+        "extraction_method": "keyword_based",
+        "confidence": 0.6
+      },
+      {
+        "description": "<a href=\"/cs/research/institute",
+        "keyword": "research",
+        "extraction_method": "keyword_based",
+        "confidence": 0.6
+      },
+      {
+        "description": "<a href=\"/cs/research/business",
+        "keyword": "research",
+        "extraction_method": "keyword_based",
+        "confidence": 0.6
+      },
+      {
+        "description": "do\" title=\"연구실소개\" target=\"_blank\">연구실소개</a>",
+        "keyword": "연구실",
+        "extraction_method": "keyword_based",
+        "confidence": 0.6
+      }
+    ],
+    "papers": [
+      {
+        "title": "E-Mail : infograd@korea",
+        "extraction_method": "title_pattern",
+        "confidence": 0.5
+      },
+      {
+        "title": "Copyrights (C)2017 KOREA University",
+        "extraction_method": "title_pattern",
+        "confidence": 0.5
+      },
+      {
+        "title": "Computer System Architecture Lab",
+        "extraction_method": "title_pattern",
+        "confidence": 0.5
+      },
+      {
+        "title": "Computer Architecture (컴퓨터 구조)",
+        "extraction_method": "title_pattern",
+        "confidence": 0.5
+      },
+      {
+        "title": "PALM (Program Analysis, Learning, and Mining) Group",
+        "extraction_method": "title_pattern",
+        "confidence": 0.5
+      },
+      {
+        "title": "Intelligent Computer Architecture",
+        "extraction_method": "title_pattern",
+        "confidence": 0.5
+      },
+      {
+        "title": "Digital eXPerience Lab",
+        "extraction_method": "title_pattern",
+        "confidence": 0.5
+      },
+      {
+        "title": "E-Mail : infograd@korea",
+        "extraction_method": "title_pattern",
+        "confidence": 0.5
+      },
+      {
+        "title": "Copyrights (C)2017 KOREA University",
+        "extraction_method": "title_pattern",
+        "confidence": 0.5
+      }
+    ],
+    "professor_pages": [
+      {
+        "text": "소개",
+        "url": "https://cs.korea.ac.kr/cs/intro/fulltime_faculty.do",
+        "type": "faculty_list",
+        "extraction_method": "css_selector"
+      }
+    ],
+    "pages_crawled": 2,
+    "extraction_stats": {
+      "professors_count": 10,
+      "labs_count": 0,
+      "papers_count": 7,
+      "total_extracted": 27,
+      "pages_crawled": 2
+    }
+  }
+]

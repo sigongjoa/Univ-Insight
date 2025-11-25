@@ -13,35 +13,55 @@ from typing import List, Dict, Optional, Set
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
 
+from src.services.university_selectors import UniversitySelectors
+
 logger = logging.getLogger(__name__)
 
 
 class ImprovedInfoExtractor:
     """향상된 정보 추출 엔진"""
 
-    def __init__(self, html: str, base_url: str = ""):
+    def __init__(self, html: str, base_url: str = "", university_domain: str = ""):
         """
         초기화
 
         Args:
             html: 파싱할 HTML
             base_url: 상대 URL을 절대 URL로 변환할 기본 URL
+            university_domain: 대학 도메인 (선택자 매칭용)
         """
         self.html = html
         self.base_url = base_url
+        self.university_domain = university_domain
         self.soup = BeautifulSoup(html, 'html.parser')
         self.text = self.soup.get_text()
+
+        # 대학별 선택자 로드
+        self.selector = UniversitySelectors.get_selector_by_domain(university_domain)
+
         logger.info(f"📄 HTML 파싱 완료 ({len(self.html)} bytes, {len(self.text)} chars)")
+        if self.selector:
+            logger.info(f"   🎓 {self.selector.university_name} 선택자 로드됨")
 
     def extract_professors(self) -> List[Dict]:
         """
         교수 정보 추출 (다층 접근)
 
-        1. 이메일 주소 기반
-        2. 이름 패턴 기반
+        1. CSS 선택자 기반 (가장 정확함)
+        2. 이메일 주소 기반
         3. 직급 키워드 기반
+        4. 테이블/리스트 구조 기반
         """
         professors = []
+
+        # 방법 0: CSS 선택자 기반 추출 (가장 우선)
+        if self.selector:
+            css_professors = self._extract_by_css_selector(
+                self.selector.professor_selectors,
+                confidence=0.95
+            )
+            professors.extend(css_professors)
+            logger.info(f"   ✅ CSS 선택자로 {len(css_professors)}명 추출")
 
         # 방법 1: 이메일 기반 추출
         email_professors = self._extract_by_email()
@@ -65,16 +85,27 @@ class ImprovedInfoExtractor:
         """
         연구실 정보 추출
 
-        1. 키워드 기반 추출
-        2. 구조화된 데이터 기반
-        3. 페이지 섹션 기반
+        1. CSS 선택자 기반 (가장 정확함)
+        2. 키워드 기반 추출
+        3. 헤딩 기반 추출
         """
         labs = []
 
+        # 방법 0: CSS 선택자 기반 추출 (가장 우선)
+        if self.selector:
+            css_labs = self._extract_by_css_selector(
+                self.selector.lab_selectors,
+                confidence=0.95,
+                extract_type="lab"
+            )
+            labs.extend(css_labs)
+            logger.info(f"   ✅ CSS 선택자로 {len(css_labs)}개 추출")
+
         # 방법 1: 키워드 기반 추출
         keyword_labs = self._extract_by_keywords(
-            ["laboratory", "lab", "research group", "research center",
-             "연구실", "실험실", "연구 그룹", "연구센터"]
+            self.selector.lab_keywords if self.selector
+            else ["laboratory", "lab", "research group", "research center",
+                  "연구실", "실험실", "연구 그룹", "연구센터"]
         )
         labs.extend(keyword_labs)
 
@@ -428,3 +459,149 @@ class ImprovedInfoExtractor:
                 unique.append(paper)
 
         return unique
+
+    # ===================== CSS 선택자 기반 추출 (NEW) =====================
+
+    def _extract_by_css_selector(
+        self,
+        selectors: Dict[str, str],
+        confidence: float = 0.95,
+        extract_type: str = "professor"
+    ) -> List[Dict]:
+        """
+        CSS 선택자를 사용한 구조화된 정보 추출
+
+        Args:
+            selectors: CSS 선택자 딕셔너리 {"name": "...", "email": "...", ...}
+            confidence: 신뢰도 점수
+            extract_type: 추출 타입 ("professor" 또는 "lab")
+
+        Returns:
+            추출된 정보 리스트
+        """
+        results = []
+
+        try:
+            # name 선택자가 있으면 그것을 기준으로 추출
+            if "name" in selectors:
+                name_selector = selectors["name"]
+                name_elements = self.soup.select(name_selector)
+
+                for elem in name_elements:
+                    if not elem:
+                        continue
+
+                    name = elem.get_text().strip()
+                    if not name or len(name) < 2:
+                        continue
+
+                    result = {
+                        "name": name[:100],
+                        "extraction_method": "css_selector",
+                        "confidence": confidence,
+                    }
+
+                    # 같은 컨테이너에서 다른 정보 추출
+                    parent = elem.find_parent()
+                    if parent:
+                        for key, selector in selectors.items():
+                            if key == "name":
+                                continue
+
+                            try:
+                                elem_found = parent.select_one(selector)
+                                if elem_found:
+                                    value = elem_found.get_text().strip()
+                                    if value:
+                                        result[key] = value[:200]
+                            except Exception as e:
+                                logger.debug(f"선택자 '{selector}' 추출 실패: {e}")
+
+                    if extract_type == "lab" and "name" in result:
+                        result["description"] = result.get("description", result["name"])
+
+                    results.append(result)
+
+            # name 선택자가 없으면 첫 번째 선택자 사용
+            elif selectors:
+                first_key = list(selectors.keys())[0]
+                first_selector = selectors[first_key]
+                elements = self.soup.select(first_selector)
+
+                for elem in elements[:20]:  # 최대 20개까지
+                    text = elem.get_text().strip()
+                    if text and len(text) > 2:
+                        results.append({
+                            first_key: text[:100],
+                            "extraction_method": "css_selector",
+                            "confidence": confidence,
+                        })
+
+        except Exception as e:
+            logger.warning(f"CSS 선택자 추출 중 오류: {e}")
+
+        return results
+
+    def extract_professor_links(self) -> List[Dict]:
+        """
+        교수 페이지 링크 발견
+
+        Returns:
+            [{"text": "...", "url": "...", "type": "..."}, ...]
+        """
+        links = []
+
+        if not self.selector:
+            return links
+
+        try:
+            # 교수 링크 발견 선택자 사용
+            for link_type, selector in self.selector.professor_link_selectors.items():
+                try:
+                    elements = self.soup.select(selector)
+                    for elem in elements:
+                        href = elem.get("href", "")
+                        text = elem.get_text().strip()
+
+                        if href and text:
+                            # 상대 URL을 절대 URL로 변환
+                            abs_url = urljoin(self.base_url, href)
+
+                            links.append({
+                                "text": text[:100],
+                                "url": abs_url,
+                                "type": link_type,
+                                "extraction_method": "css_selector",
+                            })
+                except Exception as e:
+                    logger.debug(f"링크 선택자 '{selector}' 실패: {e}")
+
+            # 키워드 기반 링크 발견 (선택자가 없을 때)
+            if not links:
+                for link in self.soup.find_all('a', href=True):
+                    text = link.get_text().strip()
+                    href = link.get('href', '')
+
+                    # 키워드 매칭
+                    if any(kw.lower() in (text + href).lower()
+                           for kw in self.selector.professor_link_keywords):
+                        abs_url = urljoin(self.base_url, href)
+                        links.append({
+                            "text": text[:100],
+                            "url": abs_url,
+                            "type": "keyword_matched",
+                            "extraction_method": "keyword_based",
+                        })
+
+        except Exception as e:
+            logger.warning(f"교수 링크 추출 중 오류: {e}")
+
+        # 중복 제거
+        seen_urls = set()
+        unique_links = []
+        for link in links:
+            if link["url"] not in seen_urls:
+                seen_urls.add(link["url"])
+                unique_links.append(link)
+
+        return unique_links[:20]  # 최대 20개

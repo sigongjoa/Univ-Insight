@@ -301,12 +301,13 @@ class GenericUniversityCrawler:
         HTML에서 교수 정보 추출 (개선된 엔진 사용)
 
         다층 접근:
-        1. 이메일 기반 추출
-        2. 직급 키워드 기반
-        3. 테이블/리스트 구조 기반
+        1. CSS 선택자 기반 (가장 정확함)
+        2. 이메일 기반 추출
+        3. 직급 키워드 기반
+        4. 테이블/리스트 구조 기반
         """
         try:
-            extractor = ImprovedInfoExtractor(html, base_url)
+            extractor = ImprovedInfoExtractor(html, base_url, base_url)
             return extractor.extract_professors()
         except Exception as e:
             logger.error(f"❌ 교수 정보 추출 실패: {e}")
@@ -317,12 +318,12 @@ class GenericUniversityCrawler:
         HTML에서 연구실 정보 추출 (개선된 엔진 사용)
 
         다층 접근:
-        1. 키워드 기반 추출
-        2. 헤딩 기반 추출
-        3. 구조화된 데이터 기반
+        1. CSS 선택자 기반 (가장 정확함)
+        2. 키워드 기반 추출
+        3. 헤딩 기반 추출
         """
         try:
-            extractor = ImprovedInfoExtractor(html, base_url)
+            extractor = ImprovedInfoExtractor(html, base_url, base_url)
             return extractor.extract_labs()
         except Exception as e:
             logger.error(f"❌ 연구실 정보 추출 실패: {e}")
@@ -333,12 +334,13 @@ class GenericUniversityCrawler:
         HTML에서 논문 정보 추출 (개선된 엔진 사용)
 
         다층 접근:
-        1. 인용 형식 기반 추출
-        2. 제목 패턴 기반
-        3. 학술 링크 기반
+        1. CSS 선택자 기반
+        2. 인용 형식 기반 추출
+        3. 제목 패턴 기반
+        4. 학술 링크 기반
         """
         try:
-            extractor = ImprovedInfoExtractor(html, base_url)
+            extractor = ImprovedInfoExtractor(html, base_url, base_url)
             return extractor.extract_papers()
         except Exception as e:
             logger.error(f"❌ 논문 정보 추출 실패: {e}")
