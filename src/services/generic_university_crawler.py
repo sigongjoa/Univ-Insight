@@ -24,6 +24,8 @@ except ImportError:
     AsyncWebCrawler = None
     CrawlResult = None
 
+from src.services.improved_info_extractor import ImprovedInfoExtractor
+
 logger = logging.getLogger(__name__)
 
 
@@ -171,7 +173,7 @@ class GenericUniversityCrawler:
         if not html:
             return []
 
-        professors = self._extract_professor_info(html)
+        professors = self._extract_professor_info(html, page_url)
         logger.info(f"   ✅ {len(professors)}명의 교수 정보 추출 완료")
 
         return professors
@@ -197,7 +199,7 @@ class GenericUniversityCrawler:
         if not html:
             return []
 
-        labs = self._extract_lab_info(html)
+        labs = self._extract_lab_info(html, page_url)
         logger.info(f"   ✅ {len(labs)}개의 연구실 정보 추출 완료")
 
         return labs
@@ -223,7 +225,7 @@ class GenericUniversityCrawler:
         if not html:
             return []
 
-        papers = self._extract_paper_info(html)
+        papers = self._extract_paper_info(html, page_url)
         logger.info(f"   ✅ {len(papers)}개의 논문 정보 추출 완료")
 
         return papers
@@ -263,153 +265,53 @@ class GenericUniversityCrawler:
 
         return links
 
-    def _extract_professor_info(self, html: str) -> List[Dict]:
+    def _extract_professor_info(self, html: str, base_url: str = "") -> List[Dict]:
         """
-        HTML에서 교수 정보 패턴 추출
+        HTML에서 교수 정보 추출 (개선된 엔진 사용)
 
-        일반적인 패턴:
-        - "Prof. Name" 또는 "교수"
-        - 이메일 주소
-        - 사무실/오피스 위치
+        다층 접근:
+        1. 이메일 기반 추출
+        2. 직급 키워드 기반
+        3. 테이블/리스트 구조 기반
         """
-        professors = []
-
         try:
-            # 이메일 패턴으로 교수 찾기
-            email_pattern = r'\b([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,})\b'
-            emails = re.findall(email_pattern, html)
-
-            for email in emails:
-                # 이메일 앞뒤의 텍스트에서 이름 추출
-                email_pos = html.find(email)
-                if email_pos == -1:
-                    continue
-
-                # 이메일 앞 300자 범위에서 이름 찾기
-                context_start = max(0, email_pos - 300)
-                context = html[context_start:email_pos + len(email) + 100]
-
-                # 이름 패턴 (여러 형식 지원)
-                name_patterns = [
-                    r'(?:Prof\.|Professor|Dr\.|교수)\s+([A-Za-z0-9\s&-]+?)(?:\<|<|email|\()',
-                    r'([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s*(?:\(|<|email)',
-                ]
-
-                name = None
-                for pattern in name_patterns:
-                    match = re.search(pattern, context, re.IGNORECASE)
-                    if match:
-                        name = match.group(1).strip()
-                        break
-
-                if name and len(name) > 2 and len(name) < 50:
-                    professors.append({
-                        "name": name,
-                        "email": email,
-                        "extracted_from": "email_pattern"
-                    })
-
+            extractor = ImprovedInfoExtractor(html, base_url)
+            return extractor.extract_professors()
         except Exception as e:
             logger.error(f"❌ 교수 정보 추출 실패: {e}")
+            return []
 
-        # 중복 제거
-        unique_professors = []
-        seen_emails = set()
-        for prof in professors:
-            if prof["email"] not in seen_emails:
-                unique_professors.append(prof)
-                seen_emails.add(prof["email"])
-
-        return unique_professors[:50]  # 최대 50명
-
-    def _extract_lab_info(self, html: str) -> List[Dict]:
+    def _extract_lab_info(self, html: str, base_url: str = "") -> List[Dict]:
         """
-        HTML에서 연구실 정보 패턴 추출
+        HTML에서 연구실 정보 추출 (개선된 엔진 사용)
 
-        일반적인 패턴:
-        - "Lab", "Laboratory", "Research Group"
-        - "연구실", "실험실"
+        다층 접근:
+        1. 키워드 기반 추출
+        2. 헤딩 기반 추출
+        3. 구조화된 데이터 기반
         """
-        labs = []
-
         try:
-            # 연구실 관련 키워드 찾기
-            lab_keywords = [
-                "laboratory",
-                "research group",
-                "research center",
-                "lab",
-                "연구실",
-                "연구 그룹",
-                "연구센터",
-                "실험실",
-            ]
-
-            for keyword in lab_keywords:
-                # 키워드를 포함하는 문장 찾기
-                pattern = rf'(?:[^.!?\n]{{0,100}}){re.escape(keyword)}[^.!?\n]{{0,200}}'
-                matches = re.finditer(pattern, html, re.IGNORECASE)
-
-                for match in matches:
-                    text = match.group(0).strip()
-                    if len(text) > 10 and len(text) < 500:
-                        labs.append({
-                            "description": text[:200],
-                            "keyword": keyword,
-                            "extracted_from": "keyword_pattern"
-                        })
-
+            extractor = ImprovedInfoExtractor(html, base_url)
+            return extractor.extract_labs()
         except Exception as e:
             logger.error(f"❌ 연구실 정보 추출 실패: {e}")
+            return []
 
-        return labs[:20]  # 최대 20개
-
-    def _extract_paper_info(self, html: str) -> List[Dict]:
+    def _extract_paper_info(self, html: str, base_url: str = "") -> List[Dict]:
         """
-        HTML에서 논문 정보 패턴 추출
+        HTML에서 논문 정보 추출 (개선된 엔진 사용)
 
-        일반적인 패턴:
-        - "Title: ...", "Journal: ...", "Year: ..."
-        - 인용 형식 (Conference, Journal 등)
+        다층 접근:
+        1. 인용 형식 기반 추출
+        2. 제목 패턴 기반
+        3. 학술 링크 기반
         """
-        papers = []
-
         try:
-            # 연도 패턴 (1900-2099)
-            year_pattern = r'\b(19|20)\d{2}\b'
-
-            # 논문 제목 같은 패턴 (대문자로 시작하는 긴 문장)
-            title_pattern = r'(?:Title|title|Title:|TITLE:)\s*"?([^"\n]+?)(?:"|$)'
-
-            # 제목 찾기
-            title_matches = re.finditer(title_pattern, html)
-            for match in title_matches:
-                title = match.group(1).strip()
-                if len(title) > 5 and len(title) < 300:
-                    papers.append({
-                        "title": title,
-                        "extracted_from": "title_pattern"
-                    })
-
-            # 제목 패턴이 없으면, 일반적인 긴 텍스트로 추정
-            if not papers:
-                # 문장 단위로 분리하고, 제목 같은 문장 찾기
-                sentences = re.split(r'[.!?\n]+', html)
-                for sentence in sentences:
-                    text = re.sub(r'<[^>]+>', '', sentence).strip()  # HTML 태그 제거
-                    if (len(text) > 20 and
-                        len(text) < 300 and
-                        text[0].isupper() and
-                        text.count(' ') > 2):
-                        papers.append({
-                            "title": text,
-                            "extracted_from": "sentence_pattern"
-                        })
-
+            extractor = ImprovedInfoExtractor(html, base_url)
+            return extractor.extract_papers()
         except Exception as e:
             logger.error(f"❌ 논문 정보 추출 실패: {e}")
-
-        return papers[:30]  # 최대 30개
+            return []
 
     def _clean_html(self, html: str) -> str:
         """HTML 태그 제거"""
