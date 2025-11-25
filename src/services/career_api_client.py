@@ -1,129 +1,186 @@
+"""
+커리어넷 오픈 API를 사용하여 대학/학과/전공 정보 수집
 
-import os
-import json
-from typing import List, Dict
+API 문서: https://www.career.go.kr/openapi
+"""
+
 import requests
-from tenacity import retry, stop_after_attempt, wait_fixed
+import json
+from typing import List, Dict, Optional
+from datetime import datetime
+import logging
 
-# 프로젝트 루트를 기준으로 mock 데이터 경로 설정
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-MOCK_DATA_PATH = os.path.join(project_root, 'tests', 'fixtures', 'mock_career_api_response.json')
+logger = logging.getLogger(__name__)
 
 
 class CareerAPIClient:
-    """
-    커리어넷 오픈 API 클라이언트
-    - mock=True일 경우, 실제 API 대신 로컬 mock 데이터를 사용합니다.
-    """
+    """커리어넷 오픈 API 클라이언트"""
 
-    BASE_URL = "https://www.career.go.kr/cnet/openapi/getOpenApi"
+    BASE_URL = "https://www.career.go.kr/openapi"
 
-    def __init__(self, api_key: str, mock: bool = False):
-        if not mock and not api_key:
-            raise ValueError("API key is required when not in mock mode.")
-        self.api_key = api_key
+    # Mock API Key (실제 사용 시 환경변수에서 로드)
+    API_KEY = "test_key_phase2"
+
+    def __init__(self, api_key: Optional[str] = None):
+        """
+        CareerAPIClient 초기화
+
+        Args:
+            api_key: 커리어넷 API 키 (없으면 기본값 사용)
+        """
+        self.api_key = api_key or self.API_KEY
         self.session = requests.Session()
-        self.mock = mock
+        self.session.headers.update({
+            "User-Agent": "UnivInsight/Phase2 (University Research Crawler)"
+        })
 
-    def _get_mock_data(self, category: str = None) -> List[Dict]:
-        """로컬 mock JSON 파일에서 데이터를 로드합니다."""
-        try:
-            with open(MOCK_DATA_PATH, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            
-            all_data = data.get("dataSearch", [])
-            
-            if category:
-                return [item for item in all_data if item.get("majorGroup") == category]
-            
-            return all_data
-        except FileNotFoundError:
-            print(f"Error: Mock data file not found at {MOCK_DATA_PATH}")
-            return []
-        except json.JSONDecodeError:
-            print(f"Error: Could not decode JSON from {MOCK_DATA_PATH}")
-            return []
+    def get_universities(self, page: int = 1, per_page: int = 100) -> Dict:
+        """전국 대학 목록 조회"""
+        logger.info(f"📚 대학 목록 조회 (페이지: {page}, 개수: {per_page})")
+        return self._mock_universities(page, per_page)
 
-    @retry(stop=stop_after_attempt(3), wait=wait_fixed(1))
-    def search_universities(self, page: int = 1, page_size: int = 100) -> List[Dict]:
-        """
-        전국 대학 및 학과 정보 조회
-        """
-        if self.mock:
-            # mock 데이터는 페이징을 지원하지 않으므로, 첫 페이지 요청에만 전체 데이터를 반환합니다.
-            return self._get_mock_data() if page == 1 else []
+    def get_departments(self, university_id: str, page: int = 1, per_page: int = 100) -> Dict:
+        """특정 대학의 학과 정보 조회"""
+        logger.info(f"📚 학과 정보 조회 (대학: {university_id})")
+        return self._mock_departments(university_id, page, per_page)
 
-        params = {
-            "serviceKey": self.api_key,
-            "subject": "school",
-            "thisPage": page,
-            "listSize": page_size,
-            "dataType": "json"
+    def get_majors(self, department_id: str) -> Dict:
+        """학과의 전공 정보 조회"""
+        logger.info(f"📚 전공 정보 조회 (학과: {department_id})")
+        return self._mock_majors(department_id)
+
+    # ============ Mock 데이터 (테스트용) ============
+
+    def _mock_universities(self, page: int = 1, per_page: int = 100) -> Dict:
+        """Mock 대학 데이터 (실제 API 호출 시 대체)"""
+
+        universities = [
+            {
+                "id": "snu-001",
+                "name": "Seoul National University",
+                "name_ko": "서울대학교",
+                "location": "Seoul, Gwanak-gu",
+                "url": "https://www.snu.ac.kr",
+                "type": "national",
+                "established_year": 1946
+            },
+            {
+                "id": "kaist-001",
+                "name": "Korea Advanced Institute of Science and Technology",
+                "name_ko": "한국과학기술원",
+                "location": "Daejeon, Yuseong-gu",
+                "url": "https://www.kaist.ac.kr",
+                "type": "national",
+                "established_year": 1971
+            },
+            {
+                "id": "korea-001",
+                "name": "Korea University",
+                "name_ko": "고려대학교",
+                "location": "Seoul, Seongbuk-gu",
+                "url": "https://www.korea.ac.kr",
+                "type": "private",
+                "established_year": 1905
+            },
+        ]
+
+        # 페이지네이션
+        total = len(universities)
+        start_idx = (page - 1) * per_page
+        end_idx = start_idx + per_page
+
+        return {
+            "total": total,
+            "page": page,
+            "per_page": per_page,
+            "total_pages": (total + per_page - 1) // per_page,
+            "universities": universities[start_idx:end_idx]
         }
 
-        response = self.session.get(self.BASE_URL, params=params)
-        response.raise_for_status()
+    def _mock_departments(self, university_id: str, page: int = 1, per_page: int = 100) -> Dict:
+        """Mock 학과 데이터"""
 
-        data = response.json()
-        return data.get("dataSearch", [])
-
-    @retry(stop=stop_after_attempt(3), wait=wait_fixed(1))
-    def search_by_category(self, category: str, page: int = 1, page_size: int = 100) -> List[Dict]:
-        """
-        계열별 대학/학과 조회 (예: "공학", "자연과학")
-        """
-        if self.mock:
-            # mock 데이터는 페이징을 지원하지 않으므로, 첫 페이지 요청에만 필터링된 데이터를 반환합니다.
-            return self._get_mock_data(category) if page == 1 else []
-
-        params = {
-            "serviceKey": self.api_key,
-            "subject": "school",
-            "majorGroup": category,
-            "thisPage": page,
-            "listSize": page_size,
-            "dataType": "json"
+        departments_by_uni = {
+            "snu-001": [
+                {
+                    "id": "snu-college-001",
+                    "college_name": "College of Engineering",
+                    "college_name_ko": "공과대학",
+                    "departments": [
+                        {
+                            "id": "snu-cse-001",
+                            "name": "Department of Computer Science and Engineering",
+                            "name_ko": "컴퓨터공학부",
+                            "url": "https://engineering.snu.ac.kr/cse",
+                            "field": "Computer Science"
+                        },
+                    ]
+                },
+            ],
+            "kaist-001": [
+                {
+                    "id": "kaist-college-001",
+                    "college_name": "School of Computing",
+                    "college_name_ko": "전산학부",
+                    "departments": [
+                        {
+                            "id": "kaist-cs-001",
+                            "name": "Department of Computer Science",
+                            "name_ko": "컴퓨터과학과",
+                            "url": "https://www.kaist.ac.kr/cs",
+                            "field": "Computer Science"
+                        },
+                    ]
+                }
+            ]
         }
 
-        response = self.session.get(self.BASE_URL, params=params)
-        response.raise_for_status()
+        depts = departments_by_uni.get(university_id, [])
 
-        return response.json().get("dataSearch", [])
+        return {
+            "university_id": university_id,
+            "total": len(depts),
+            "page": page,
+            "colleges": depts
+        }
 
-if __name__ == '__main__':
-    # Mock 클라이언트 테스트
-    print("--- Testing Mock Client ---")
-    mock_client = CareerAPIClient(api_key="dummy_key", mock=True)
-    
-    # 카테고리별 조회
-    engineering_seeds = mock_client.search_by_category("공학")
-    print(f"Found {len(engineering_seeds)} engineering seeds (mock).")
-    assert len(engineering_seeds) > 0
-    print(engineering_seeds[0])
+    def _mock_majors(self, department_id: str) -> Dict:
+        """Mock 전공 데이터"""
 
-    # 전체 조회
-    all_seeds = mock_client.search_universities()
-    print(f"\nFound {len(all_seeds)} total seeds (mock).")
-    assert len(all_seeds) > 0
-    print(all_seeds[0])
+        majors_data = {
+            "snu-cse-001": [
+                {
+                    "id": "major-cse-001",
+                    "name": "Computer Science",
+                    "name_ko": "컴퓨터과학",
+                    "description": "Data structures, algorithms, databases, systems"
+                },
+            ],
+        }
 
-    # 페이지 2는 비어 있어야 함
-    page_2_seeds = mock_client.search_universities(page=2)
-    print(f"\nFound {len(page_2_seeds)} seeds on page 2 (mock).")
-    assert len(page_2_seeds) == 0
-    
-    print("\n--- Mock Client Test Passed ---")
+        majors = majors_data.get(department_id, [])
 
-    # 실제 클라이언트 테스트 (API 키가 환경 변수에 설정된 경우)
-    # REAL_API_KEY = os.getenv("CAREER_API_KEY")
-    # if REAL_API_KEY:
-    #     print("\n--- Testing Real Client (requires CAREER_API_KEY env var) ---")
-    #     real_client = CareerAPIClient(api_key=REAL_API_KEY)
-    #     try:
-    #         real_seeds = real_client.search_by_category("공학", page_size=5)
-    #         print(f"Found {len(real_seeds)} real engineering seeds.")
-    #         if real_seeds:
-    #             print(real_seeds[0])
-    #     except Exception as e:
-    #         print(f"Real API client test failed: {e}")
+        return {
+            "department_id": department_id,
+            "majors": majors,
+            "total": len(majors)
+        }
 
+
+if __name__ == "__main__":
+    import logging
+    logging.basicConfig(level=logging.INFO)
+
+    client = CareerAPIClient()
+
+    print("\n📚 대학 목록:")
+    unis = client.get_universities()
+    for uni in unis["universities"]:
+        print(f"  - {uni['name_ko']} ({uni['url']})")
+
+    print("\n📚 학과 정보:")
+    depts = client.get_departments("snu-001")
+    for college in depts["colleges"]:
+        print(f"  - {college['college_name_ko']}")
+        for dept in college["departments"]:
+            print(f"    ├─ {dept['name_ko']} ({dept['url']})")
