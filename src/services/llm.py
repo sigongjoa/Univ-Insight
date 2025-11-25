@@ -9,14 +9,14 @@ class BaseLLM:
         raise NotImplementedError
 
 class OllamaLLM(BaseLLM):
-    def __init__(self, model: str = "llama2:latest"):
+    def __init__(self, model: str = "qwen2:7b"):
         self.model = model
 
     def analyze(self, paper: ResearchPaper) -> AnalysisResult:
         print(f"   [OllamaLLM] Analyzing content with {self.model}...")
 
-        # Use content from Pydantic schema (already converted from SQLAlchemy model if needed)
-        content_to_analyze = paper.content or paper.title
+        # Use content_raw from the updated Pydantic schema
+        content_to_analyze = paper.content_raw or paper.title
 
         # Construct the prompt
         prompt = f"""
@@ -49,54 +49,45 @@ class OllamaLLM(BaseLLM):
         }}
         """
 
-        try:
-            response = ollama.chat(model=self.model, messages=[
-                {
-                    'role': 'user',
-                    'content': prompt,
-                },
-            ])
-            
-            content = response['message']['content']
-            
-            # Attempt to clean and parse JSON
-            # Sometimes LLMs add ```json ... ``` or other text
-            json_match = re.search(r'\{.*\}', content, re.DOTALL)
-            if json_match:
-                json_str = json_match.group(0)
-                data = json.loads(json_str)
-                
-                return AnalysisResult(
-                    title=data.get("title", "Untitled"),
-                    research_summary=data.get("research_summary", "No summary provided."),
-                    career_path=CareerPath(
-                        companies=data.get("career_path", {}).get("companies", []),
-                        job_title=data.get("career_path", {}).get("job_title", "Unknown"),
-                        avg_salary_hint=data.get("career_path", {}).get("avg_salary_hint", "Unknown")
-                    ),
-                    action_item=ActionItem(
-                        subjects=data.get("action_item", {}).get("subjects", []),
-                        research_topic=data.get("action_item", {}).get("research_topic", "Unknown")
-                    )
-                )
-            else:
-                print(f"   [OllamaLLM] Failed to find JSON in response: {content[:100]}...")
-                raise ValueError("No JSON found in response")
+        response = ollama.chat(model=self.model, messages=[
+            {
+                'role': 'user',
+                'content': prompt,
+            },
+        ])
+        
+        content = response['message']['content']
+        
+        # Attempt to clean and parse JSON
+        json_match = re.search(r'\{.*\}', content, re.DOTALL)
+        if not json_match:
+            raise ValueError(f"No JSON found in Ollama response: {content[:200]}")
 
-        except Exception as e:
-            print(f"   [OllamaLLM] Error: {e}")
-            # Fallback to a basic error result
-            return AnalysisResult(
-                title="Error during analysis",
-                research_summary=f"Failed to analyze due to: {str(e)}",
-                career_path=CareerPath(companies=[], job_title="Error", avg_salary_hint="Error"),
-                action_item=ActionItem(subjects=[], research_topic="Error")
+        json_str = json_match.group(0)
+        data = json.loads(json_str)
+        
+        return AnalysisResult(
+            paper_id=paper.id, # Add paper_id
+            title=data.get("title", "Untitled"),
+            research_summary=data.get("research_summary", "No summary provided."),
+            career_path=CareerPath(
+                companies=data.get("career_path", {}).get("companies", []),
+                job_title=data.get("career_path", {}).get("job_title", "Unknown"),
+                avg_salary_hint=data.get("career_path", {}).get("avg_salary_hint", "Unknown")
+            ),
+            action_item=ActionItem(
+                subjects=data.get("action_item", {}).get("subjects", []),
+                research_topic=data.get("action_item", {}).get("research_topic", "Unknown")
             )
+        )
 
 class MockLLM(BaseLLM):
     def analyze(self, paper: ResearchPaper) -> AnalysisResult:
         # Mock logic to simulate LLM processing
+        # Now accepts a paper object to correctly set the paper_id
+        paper_id = paper.id if paper else "mock_paper_id"
         return AnalysisResult(
+            paper_id=paper_id,
             title="스마트폰에서도 쌩쌩 돌아가는 AI, 어떻게 만들까?",
             research_summary="이 연구는 마치 무거운 배낭을 메고 달리는 육상 선수(기존 AI)에게 가벼운 운동복을 입혀주는 것과 같아요. 복잡한 계산을 줄여서 스마트폰 같은 작은 기기에서도 AI가 빠르게 작동하도록 만드는 기술입니다.",
             career_path=CareerPath(

@@ -1,5 +1,6 @@
 import asyncio
 import re
+import uuid
 from typing import Optional
 from datetime import datetime
 from src.domain.schemas import ResearchPaper
@@ -59,13 +60,16 @@ class KaistCrawler(BaseCrawler):
                 # Extract title from the page
                 title = self._extract_title(result.markdown, url)
 
-                # Create ResearchPaper object
+                # Create ResearchPaper object with the new schema
                 paper = ResearchPaper(
-                    source="KAIST CS",
+                    id=str(uuid.uuid4()),
+                    url=url,
                     title=title,
-                    content=result.markdown[:5000],  # Limit content to first 5000 chars
-                    date=datetime.now().isoformat(),
-                    url=url
+                    university="KAIST",
+                    department="CS",
+                    pub_date=datetime.now().date(),
+                    content_raw=result.markdown[:8000],  # Limit content size
+                    crawled_at=datetime.now()
                 )
 
                 return paper
@@ -91,9 +95,12 @@ class MockCrawler(BaseCrawler):
     def crawl(self, url: str) -> ResearchPaper:
         """Return mock research paper"""
         return ResearchPaper(
-            source="KAIST (Mock)",
+            id=str(uuid.uuid4()),
+            url=url,
             title="Efficient Transformer Architectures for Mobile Devices",
-            content="This research focuses on optimizing transformer models to run efficiently on mobile devices. Traditional transformers are computationally expensive, but this work introduces novel quantization and pruning techniques that reduce model size by 70% while maintaining 95% accuracy. The approach combines knowledge distillation with hardware-aware optimization, making it practical for deployment on smartphones and IoT devices.",
-            date=datetime.now().isoformat(),
-            url=url
+            university="KAIST (Mock)",
+            department="CS",
+            pub_date=datetime.now().date(),
+            content_raw="This research focuses on optimizing transformer models to run efficiently on mobile devices. Traditional transformers are computationally expensive, but this work introduces novel quantization and pruning techniques that reduce model size by 70% while maintaining 95% accuracy. The approach combines knowledge distillation with hardware-aware optimization, making it practical for deployment on smartphones and IoT devices.",
+            crawled_at=datetime.now()
         )
