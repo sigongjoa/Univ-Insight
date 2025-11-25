@@ -28,6 +28,9 @@ from src.domain.models import (
 from src.services.llm import OllamaLLM
 from src.core.logging import get_logger, setup_logging
 
+# Schemas
+from src.domain.schemas import ResearchPaper as PydanticResearchPaper
+
 # Logging
 setup_logging(level="INFO")
 logger = get_logger(__name__)
@@ -36,6 +39,19 @@ logger = get_logger(__name__)
 DATABASE_URL = "sqlite:///./univ_insight.db"
 engine = create_engine(DATABASE_URL, echo=False)
 SessionLocal = sessionmaker(bind=engine)
+
+
+def _convert_to_pydantic_schema(orm_paper: ResearchPaper) -> PydanticResearchPaper:
+    """Convert SQLAlchemy ResearchPaper model to Pydantic schema"""
+    content = orm_paper.full_text or orm_paper.abstract or orm_paper.title
+
+    return PydanticResearchPaper(
+        source=orm_paper.lab_id or "Unknown",
+        title=orm_paper.title,
+        content=content,
+        date=orm_paper.publication_date.isoformat() if orm_paper.publication_date else "Unknown",
+        url=orm_paper.url or ""
+    )
 
 
 def analyze_papers_with_ollama():
@@ -74,8 +90,9 @@ def analyze_papers_with_ollama():
             logger.info(f"[{idx}/{len(papers)}] 논문 분석 중: {paper.title[:50]}...")
 
             try:
-                # Ollama로 분석
-                analysis_result = llm.analyze(paper)
+                # Ollama로 분석 - convert SQLAlchemy model to Pydantic schema
+                pydantic_paper = _convert_to_pydantic_schema(paper)
+                analysis_result = llm.analyze(pydantic_paper)
 
                 # PaperAnalysis 객체 생성 (새로운 schema에 맞춤)
                 analysis = PaperAnalysis(
