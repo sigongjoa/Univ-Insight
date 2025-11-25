@@ -1,0 +1,14 @@
+스크린샷 MD5 해시 검증 리포트
+생성 날짜: 2025-11-25 10:06:02
+================================================================================
+
+파일명                          MD5 Hash                         날짜         상태
+────────────────────────────────────────────────────────────────────────────────
+1_universities_list.json        6b4fde4442f37dd4918a459bf947c0212025-11-25 10:06✅
+2_university_detail.json        02f2a0aa3d3b8014c7f99613069a63582025-11-25 10:06✅
+3_college_detail.json           a79860741caf4a6fd2cd91ea1535f40a2025-11-25 10:06✅
+4_department_detail.json        d25cd381f5223a2ea4ac8304ffd2f9152025-11-25 10:06✅
+5_professor_detail.json         b58e84bfc2a0d973a5b03c9f1d230d452025-11-25 10:06✅
+6_lab_detail.json               a362bbc3a6d2bbc3556234de52c290d12025-11-25 10:06✅
+7_research_list.json            6e85567118791cd1c24f0064962f2f9a2025-11-25 10:06✅
+8_research_analysis.json        00db4ccd5cc8fc6b385347a8724dd4c02025-11-25 10:06✅

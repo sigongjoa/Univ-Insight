@@ -1,0 +1,34 @@
+{
+  "id": "prof-choi-systems-001",
+  "name": "Choi Byoung-hee",
+  "name_ko": "최병희",
+  "department_id": "snu-dept-computer",
+  "department_name": "컴퓨터공학부",
+  "title": "Professor",
+  "email": "bhee.choi@snu.ac.kr",
+  "phone": null,
+  "research_interests": [
+    "Systems",
+    "Database",
+    "Distributed Computing"
+  ],
+  "education": {},
+  "h_index": 48,
+  "publications_count": null,
+  "profile_url": null,
+  "bio": null,
+  "laboratories": [
+    {
+      "id": "lab-systems-001",
+      "name": "Systems and Database Lab",
+      "name_ko": "시스템 및 데이터베이스 연구실",
+      "research_areas": [
+        "Database Systems",
+        "Distributed Computing",
+        "Cloud Computing"
+      ],
+      "member_count": 14,
+      "paper_count": 0
+    }
+  ]
+}

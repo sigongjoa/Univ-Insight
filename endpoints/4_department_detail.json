@@ -1,0 +1,24 @@
+{
+  "id": "snu-dept-computer",
+  "name": "Department of Computer Science and Engineering",
+  "name_ko": "컴퓨터공학부",
+  "college_id": "snu-college-eng",
+  "college_name": "공과대학",
+  "university_name": "서울대학교",
+  "faculty_count": 1,
+  "website": "http://cse.snu.ac.kr",
+  "description": "Excellence in AI, systems, and software engineering",
+  "established_year": null,
+  "professors": [
+    {
+      "id": "prof-choi-systems-001",
+      "name": "Choi Byoung-hee",
+      "name_ko": "최병희",
+      "title": "Professor",
+      "email": "bhee.choi@snu.ac.kr",
+      "h_index": 48,
+      "publications_count": null,
+      "lab_count": 1
+    }
+  ]
+}

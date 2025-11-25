@@ -1,0 +1,31 @@
+{
+  "id": "seoul-national-univ",
+  "name": "Seoul National University",
+  "name_ko": "서울대학교",
+  "location": "Seoul, South Korea",
+  "ranking": 1,
+  "tier": "TOP",
+  "url": "https://www.snu.ac.kr",
+  "description": "Seoul National University is the leading national research university in South Korea",
+  "established_year": 1946,
+  "colleges": [
+    {
+      "id": "snu-college-eng",
+      "name": "College of Engineering",
+      "name_ko": "공과대학",
+      "department_count": 3
+    },
+    {
+      "id": "snu-college-science",
+      "name": "College of Natural Sciences",
+      "name_ko": "자연과학대학",
+      "department_count": 2
+    },
+    {
+      "id": "snu-college-medicine",
+      "name": "College of Medicine",
+      "name_ko": "의과대학",
+      "department_count": 1
+    }
+  ]
+}

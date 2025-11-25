@@ -14,15 +14,18 @@ class OllamaLLM(BaseLLM):
 
     def analyze(self, paper: ResearchPaper) -> AnalysisResult:
         print(f"   [OllamaLLM] Analyzing content with {self.model}...")
-        
+
+        # Use full_text or abstract, whichever is available
+        content_to_analyze = paper.full_text or paper.abstract or paper.title
+
         # Construct the prompt
         prompt = f"""
         You are an expert education consultant and AI researcher.
         Your task is to analyze the following research paper content and translate it for high school students.
-        
+
         Input Content:
         Title: {paper.title}
-        Content: {paper.content[:2000]}... (truncated)
+        Content: {content_to_analyze[:2000]}... (truncated)
         
         Instructions:
         1. Summarize the research in simple terms (middle school level).

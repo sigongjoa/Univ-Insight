@@ -1,0 +1,32 @@
+{
+  "id": "snu-college-eng",
+  "name": "College of Engineering",
+  "name_ko": "공과대학",
+  "university_id": "seoul-national-univ",
+  "university_name": "서울대학교",
+  "description": "Leading engineering school producing innovative engineers and researchers",
+  "established_year": 1946,
+  "departments": [
+    {
+      "id": "snu-dept-eecs",
+      "name": "Department of Electrical and Computer Engineering",
+      "name_ko": "전기정보공학부",
+      "faculty_count": 2,
+      "professor_count": 2
+    },
+    {
+      "id": "snu-dept-mechanical",
+      "name": "Department of Mechanical Engineering",
+      "name_ko": "기계항공공학부",
+      "faculty_count": 1,
+      "professor_count": 1
+    },
+    {
+      "id": "snu-dept-computer",
+      "name": "Department of Computer Science and Engineering",
+      "name_ko": "컴퓨터공학부",
+      "faculty_count": 1,
+      "professor_count": 1
+    }
+  ]
+}

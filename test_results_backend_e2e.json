@@ -1,0 +1,63 @@
+{
+  "scenarios": [
+    {
+      "name": "Hierarchical Navigation",
+      "steps": [
+        {
+          "step": "Get Universities",
+          "status": "✅",
+          "time": 0.007268190383911133
+        },
+        {
+          "step": "Get University Details",
+          "status": "✅",
+          "time": 0.009937763214111328
+        },
+        {
+          "step": "Get College Details",
+          "status": "✅",
+          "time": 0.010854959487915039
+        },
+        {
+          "step": "Get Department Details",
+          "status": "✅",
+          "time": 0.010550975799560547
+        },
+        {
+          "step": "Get Professor Details",
+          "status": "✅",
+          "time": 0.008059263229370117
+        },
+        {
+          "step": "Get Laboratory Details",
+          "status": "✅",
+          "time": 0.008821964263916016
+        }
+      ],
+      "success": true,
+      "total_time": 0.05718827247619629
+    },
+    {
+      "name": "Paper Exploration",
+      "steps": [],
+      "success": false,
+      "total_time": 0.0016803741455078125
+    },
+    {
+      "name": "Vector Search",
+      "steps": [
+        {
+          "step": "Vector Search",
+          "status": "✅",
+          "time": 0.29606199264526367,
+          "queries": 4,
+          "results": 12
+        }
+      ],
+      "success": true,
+      "total_time": 1.186310052871704
+    }
+  ],
+  "performance": {},
+  "errors": []
+}

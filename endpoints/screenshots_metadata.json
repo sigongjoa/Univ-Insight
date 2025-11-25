@@ -1,0 +1,56 @@
+{
+  "timestamp": "2025-11-25T10:06:02.304665",
+  "total": 8,
+  "successful": 8,
+  "failed": 0,
+  "results": [
+    {
+      "endpoint": "1_universities_list",
+      "success": true,
+      "hash": "6b4fde4442f37dd4918a459bf947c021",
+      "timestamp": "2025-11-25T10:06:02.123473"
+    },
+    {
+      "endpoint": "2_university_detail",
+      "success": true,
+      "hash": "02f2a0aa3d3b8014c7f99613069a6358",
+      "timestamp": "2025-11-25T10:06:02.134956"
+    },
+    {
+      "endpoint": "3_college_detail",
+      "success": true,
+      "hash": "a79860741caf4a6fd2cd91ea1535f40a",
+      "timestamp": "2025-11-25T10:06:02.148283"
+    },
+    {
+      "endpoint": "4_department_detail",
+      "success": true,
+      "hash": "d25cd381f5223a2ea4ac8304ffd2f915",
+      "timestamp": "2025-11-25T10:06:02.212464"
+    },
+    {
+      "endpoint": "5_professor_detail",
+      "success": true,
+      "hash": "b58e84bfc2a0d973a5b03c9f1d230d45",
+      "timestamp": "2025-11-25T10:06:02.223606"
+    },
+    {
+      "endpoint": "6_lab_detail",
+      "success": true,
+      "hash": "a362bbc3a6d2bbc3556234de52c290d1",
+      "timestamp": "2025-11-25T10:06:02.274623"
+    },
+    {
+      "endpoint": "7_research_list",
+      "success": true,
+      "hash": "6e85567118791cd1c24f0064962f2f9a",
+      "timestamp": "2025-11-25T10:06:02.289322"
+    },
+    {
+      "endpoint": "8_research_analysis",
+      "success": true,
+      "hash": "00db4ccd5cc8fc6b385347a8724dd4c0",
+      "timestamp": "2025-11-25T10:06:02.301644"
+    }
+  ]
+}

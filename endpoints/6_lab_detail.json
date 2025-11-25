@@ -1,0 +1,28 @@
+{
+  "id": "lab-systems-001",
+  "name": "Systems and Database Lab",
+  "name_ko": "시스템 및 데이터베이스 연구실",
+  "professor_id": "prof-choi-systems-001",
+  "professor_name": "최병희",
+  "department_id": "snu-dept-computer",
+  "department_name": "컴퓨터공학부",
+  "research_areas": [
+    "Database Systems",
+    "Distributed Computing",
+    "Cloud Computing"
+  ],
+  "description": null,
+  "established_year": null,
+  "member_count": 14,
+  "website": null,
+  "email": null,
+  "location": null,
+  "current_projects": [
+    "Next-Generation Database Systems",
+    "Distributed Graph Processing"
+  ],
+  "funding_info": {},
+  "facilities": [],
+  "members": [],
+  "papers": []
+}

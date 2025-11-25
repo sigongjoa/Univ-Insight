@@ -1,0 +1,92 @@
+{
+  "total_count": 5,
+  "items": [
+    {
+      "id": "paper-snu-005",
+      "title": "Compiler Optimization for Next-Generation Programming Languages",
+      "authors": [
+        "Jung, H.K.",
+        "Kim, S.H."
+      ],
+      "lab_id": null,
+      "publication_year": 2024,
+      "venue": "PLDI 2024",
+      "citation_count": 0,
+      "keywords": [
+        "Compiler Design",
+        "Programming Languages",
+        "Optimization"
+      ]
+    },
+    {
+      "id": "paper-snu-004",
+      "title": "Distributed Systems Optimization for Cloud Computing",
+      "authors": [
+        "Park, M.S.",
+        "Lee, S.J."
+      ],
+      "lab_id": null,
+      "publication_year": 2024,
+      "venue": "OSDI 2024",
+      "citation_count": 0,
+      "keywords": [
+        "Distributed Systems",
+        "Cloud Computing",
+        "Microservices"
+      ]
+    },
+    {
+      "id": "paper-snu-003",
+      "title": "Real-time Object Detection for Autonomous Vehicles",
+      "authors": [
+        "Kim, Y.H.",
+        "Park, J.H."
+      ],
+      "lab_id": null,
+      "publication_year": 2024,
+      "venue": "CVPR 2024",
+      "citation_count": 0,
+      "keywords": [
+        "Computer Vision",
+        "Object Detection",
+        "Autonomous Driving"
+      ]
+    },
+    {
+      "id": "paper-snu-002",
+      "title": "Adversarial Robustness in Computer Vision: Defense Mechanisms",
+      "authors": [
+        "Choi, J.W.",
+        "Lee, J.M."
+      ],
+      "lab_id": null,
+      "publication_year": 2024,
+      "venue": "ICCV 2024",
+      "citation_count": 0,
+      "keywords": [
+        "Computer Vision",
+        "Adversarial Examples",
+        "Robustness"
+      ]
+    },
+    {
+      "id": "paper-snu-001",
+      "title": "Korean Language Model Optimization using Transformer Architecture",
+      "authors": [
+        "Lee, S.H.",
+        "Kim, J.W.",
+        "Park, M.S."
+      ],
+      "lab_id": null,
+      "publication_year": 2024,
+      "venue": "NeurIPS 2024",
+      "citation_count": 0,
+      "keywords": [
+        "Deep Learning",
+        "NLP",
+        "Transformer",
+        "Korean Language"
+      ]
+    }
+  ]
+}

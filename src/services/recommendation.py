@@ -7,7 +7,7 @@ including the Plan B (fallback university) suggestion feature.
 
 from typing import List, Optional, Dict
 from sqlalchemy.orm import Session
-from src.domain.models import ResearchPaper, AnalysisResult, UniversityTier
+from src.domain.models import ResearchPaper, PaperAnalysis, University
 from src.services.vector_store import VectorStore
 
 

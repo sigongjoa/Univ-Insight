@@ -1,0 +1,15 @@
+{
+  "total_count": 1,
+  "items": [
+    {
+      "id": "seoul-national-univ",
+      "name": "Seoul National University",
+      "name_ko": "서울대학교",
+      "location": "Seoul, South Korea",
+      "ranking": 1,
+      "tier": "TOP",
+      "established_year": 1946,
+      "college_count": 3
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "paper_id": "paper-snu-001",
+  "title": "Korean Language Model Optimization using Transformer Architecture",
+  "authors": [
+    "Lee, S.H.",
+    "Kim, J.W.",
+    "Park, M.S."
+  ],
+  "analysis": {
+    "easy_summary": "Failed to analyze due to: Expecting value: line 5 column 30 (char 373)",
+    "technical_summary": "Technical analysis of Korean Language Model Optimization using Transformer Architecture",
+    "core_technologies": [
+      "Ai"
+    ],
+    "required_skills": [
+      "Programming",
+      "Mathematics",
+      "Data Analysis",
+      "System Design"
+    ],
+    "math_concepts": [
+      "Linear Algebra",
+      "Statistics",
+      "Calculus",
+      "Probability"
+    ],
+    "application_fields": [
+      "Technology",
+      "Industry Applications",
+      "Research"
+    ],
+    "industry_relevance": "Relevant for technology sector and AI industry",
+    "career_paths": [],
+    "recommended_companies": [],
+    "salary_range": "Error",
+    "job_roles": [
+      "Error"
+    ],
+    "recommended_subjects": [
+      "Advanced Mathematics"
+    ],
+    "action_items": {
+      "research_topic": "Error",
+      "subjects": []
+    },
+    "learning_path": [
+      {
+        "step": 1,
+        "title": "기초 이론",
+        "subjects": [
+          "미적분",
+          "선형대수",
+          "확률통계"
+        ],
+        "duration": "1-2개월",
+        "focus": "Mathematical foundations"
+      },
+      {
+        "step": 2,
+        "title": "프로그래밍 기초",
+        "subjects": [
+          "Python",
+          "C++",
+          "Java"
+        ],
+        "duration": "2-3개월",
+        "focus": "Programming fundamentals"
+      },
+      {
+        "step": 3,
+        "title": "전공 기초",
+        "subjects": [
+          "Advanced Topics"
+        ],
+        "duration": "2-3개월",
+        "focus": "Domain-specific knowledge"
+      },
+      {
+        "step": 4,
+        "title": "심화 학습",
+        "subjects": [
+          "Research Topics"
+        ],
+        "duration": "3-6개월",
+        "focus": "Advanced topics and research"
+      }
+    ],
+    "limitations": null,
+    "challenges": []
+  }
+}
