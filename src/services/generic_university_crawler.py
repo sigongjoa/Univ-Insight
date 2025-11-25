@@ -173,6 +173,11 @@ class GenericUniversityCrawler:
         if not html:
             return []
 
+        # 에러 페이지 감지
+        if self._is_error_page(html):
+            logger.warning(f"   ⚠️  에러 페이지 감지: {page_url}")
+            return []
+
         professors = self._extract_professor_info(html, page_url)
         logger.info(f"   ✅ {len(professors)}명의 교수 정보 추출 완료")
 
@@ -196,7 +201,7 @@ class GenericUniversityCrawler:
         logger.info(f"🔍 연구실 정보 추출 중: {page_url}")
 
         html = await self.crawl_page(page_url)
-        if not html:
+        if not html or self._is_error_page(html):
             return []
 
         labs = self._extract_lab_info(html, page_url)
@@ -222,7 +227,7 @@ class GenericUniversityCrawler:
         logger.info(f"🔍 논문 정보 추출 중: {page_url}")
 
         html = await self.crawl_page(page_url)
-        if not html:
+        if not html or self._is_error_page(html):
             return []
 
         papers = self._extract_paper_info(html, page_url)
@@ -264,6 +269,32 @@ class GenericUniversityCrawler:
             logger.error(f"❌ 링크 추출 실패: {e}")
 
         return links
+
+    def _is_error_page(self, html: str) -> bool:
+        """
+        에러 페이지인지 감지
+
+        에러 페이지의 특징:
+        - "Error" 키워드가 제목에 있음
+        - "404", "500", "503" 에러 코드
+        - "Page not found" 등 메시지
+        - fncGoAfterErrorPage 같은 에러 스크립트
+        """
+        error_indicators = [
+            r'<title>\s*Error\s*Page\s*</title>',
+            r'404\s*Not\s*Found',
+            r'500\s*Internal\s*Server\s*Error',
+            r'503\s*Service\s*Unavailable',
+            r'fncGoAfterErrorPage',
+            r'page.*not.*found',
+        ]
+
+        html_lower = html.lower()
+        for pattern in error_indicators:
+            if re.search(pattern, html_lower, re.IGNORECASE):
+                return True
+
+        return False
 
     def _extract_professor_info(self, html: str, base_url: str = "") -> List[Dict]:
         """

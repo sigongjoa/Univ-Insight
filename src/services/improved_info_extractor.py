@@ -211,22 +211,50 @@ class ImprovedInfoExtractor:
 
     def _extract_name_from_context(self, context: str) -> Optional[str]:
         """컨텍스트에서 이름 추출"""
+        # 이름으로 제외할 단어들 (기관명, 일반 단어 등)
+        excluded_words = {
+            "university", "college", "department", "institute", "school",
+            "대학교", "대학", "학과", "학부", "센터", "연구소", "학교",
+            "korea", "seoul", "kaist", "snu", "the", "and", "or",
+            "engineering", "science", "technology", "research", "center",
+            "professor", "prof", "associate", "assistant", "distinguished",
+            "emeritus", "faculty", "members", "graduate", "students",
+            "office", "room", "building", "administration", "email", "phone",
+            "website", "notice", "news", "event", "seminar", "lab",
+            "교수", "부교수", "조교수", "명예", "강사", "연구원",
+            "학생", "대학원", "학부", "사무", "행정", "인포", "공지",
+            "뉴스", "행사", "세미나"
+        }
+
         # 이름 패턴
         patterns = [
-            # 영문 이름: Firstname Lastname
+            # 영문 이름: Firstname Lastname (2단어)
             r'(?:^|\W)([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)(?:\s|$|,|\()',
-            # 한글 이름
-            r'([가-힣]{2,5})',
+            # 한글 이름 (2-4자)
+            r'([가-힣]{2,4}(?:\s[가-힣]{1,3})?)',
             # Dr./Prof. + 이름
-            r'(?:Dr\.|Prof\.|Doctor)\s+([A-Za-z\s]+?)(?:\s|,|\(|$)',
+            r'(?:Dr\.|Prof\.|Doctor|교수)\s+([A-Za-z가-힣\s]+?)(?:\s|,|\(|$)',
         ]
 
         for pattern in patterns:
             match = re.search(pattern, context)
             if match:
                 name = match.group(1).strip()
-                if 2 < len(name) < 100:
-                    return name
+
+                # 길이 체크
+                if not (2 < len(name) < 100):
+                    continue
+
+                # 제외 단어 체크
+                name_lower = name.lower()
+                if any(excluded in name_lower for excluded in excluded_words):
+                    continue
+
+                # 숫자가 많으면 제외
+                if sum(c.isdigit() for c in name) > len(name) * 0.3:
+                    continue
+
+                return name
 
         return None
 
