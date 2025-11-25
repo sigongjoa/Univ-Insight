@@ -146,8 +146,9 @@ GET http://localhost:8000/api/v1/research/paper-snu-001/analysis
 - [docs/api/PYTHON_EXAMPLES.md](docs/api/PYTHON_EXAMPLES.md) - Python 코드 예시
 
 ### Phase 문서
+### Phase 문서
 - [PHASE_1 완료](docs/phases/PHASE_1_CORE_INFRASTRUCTURE.md) ✅ 2024-11-25
-- PHASE_2 예정 (API 확장 및 추천 엔진)
+- [PHASE_2 진행중](docs/phases/PHASE_2_CRAWLER_IMPLEMENTATION.md) 🔄 (데이터 확보 전략 수립)
 - PHASE_3 예정 (프론트엔드)
 
 ---

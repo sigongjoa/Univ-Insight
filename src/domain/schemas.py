@@ -28,3 +28,16 @@ class AnalysisResult(BaseModel):
     career_path: CareerPath
     action_item: ActionItem
 
+
+class DepartmentInfo(BaseModel):
+    id: Optional[str] = None
+    university_name: str
+    department_name: str
+    category: Optional[str] = None  # 예: 공학계열
+    url: Optional[str] = None       # 학과 홈페이지 (추후 매핑)
+
+class UniversityInfo(BaseModel):
+    name: str
+    region: Optional[str] = None
+    url: Optional[str] = None       # 학교 대표 URL
+    departments: List[DepartmentInfo] = []
