@@ -34,48 +34,43 @@ class UniversityCrawler(BaseCrawler):
             ResearchPaper object or None if crawling fails
         """
         if not AsyncWebCrawler:
-            print("   [Error] crawl4ai not installed.")
-            return None
+            raise ImportError("crawl4ai not installed. Please install it to use the crawler.")
         return asyncio.run(self._crawl_async(url))
 
     async def _crawl_async(self, url: str) -> Optional[ResearchPaper]:
         """Async crawling implementation"""
         print(f"   [UniversityCrawler] Starting crawl for {url}...")
 
-        try:
-            async with AsyncWebCrawler(verbose=False) as crawler:
-                result = await crawler.arun(
-                    url=url,
-                    timeout=30,
-                    wait_until="networkidle"
-                )
+        # No try-except here to let errors propagate for debugging
+        async with AsyncWebCrawler(verbose=True) as crawler:
+            result = await crawler.arun(
+                url=url,
+                timeout=60,  # Increased timeout
+                wait_until="networkidle"
+            )
 
-                if not result.success:
-                    print(f"   [UniversityCrawler] Failed to crawl: {result.error_message}")
-                    return None
+            if not result.success:
+                print(f"   [UniversityCrawler] Failed to crawl: {result.error_message}")
+                raise Exception(f"Crawl failed: {result.error_message}")
 
-                print(f"   [UniversityCrawler] Successfully crawled. Content length: {len(result.markdown)}")
+            print(f"   [UniversityCrawler] Successfully crawled. Content length: {len(result.markdown)}")
 
-                # Extract title from the page
-                title = self._extract_title(result.markdown, url)
+            # Extract title from the page
+            title = self._extract_title(result.markdown, url)
 
-                # Create ResearchPaper object with the new schema
-                paper = ResearchPaper(
-                    id=str(uuid.uuid4()),
-                    url=url,
-                    title=title,
-                    university="Unknown", # Should be passed or inferred
-                    department="Unknown",
-                    pub_date=datetime.now().date(),
-                    content_raw=result.markdown[:8000],  # Limit content size
-                    crawled_at=datetime.now()
-                )
+            # Create ResearchPaper object with the new schema
+            paper = ResearchPaper(
+                id=str(uuid.uuid4()),
+                url=url,
+                title=title,
+                university="Unknown", # Should be passed or inferred
+                department="Unknown",
+                pub_date=datetime.now().date(),
+                content_raw=result.markdown[:10000],  # Increased limit
+                crawled_at=datetime.now()
+            )
 
-                return paper
-
-        except Exception as e:
-            print(f"   [UniversityCrawler] Error during crawling: {str(e)}")
-            return None
+            return paper
 
     @staticmethod
     def _extract_title(content: str, url: str) -> str:

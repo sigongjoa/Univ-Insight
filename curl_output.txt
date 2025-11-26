@@ -1,0 +1,24 @@
+* Host localhost:8001 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [::1]:8001...
+* connect to ::1 port 8001 from ::1 port 59744 failed: Connection refused
+*   Trying 127.0.0.1:8001...
+* Connected to localhost (127.0.0.1) port 8001
+> GET /api/v1/departments/snu-cse/research HTTP/1.1
+> Host: localhost:8001
+> User-Agent: curl/8.5.0
+> Accept: */*
+> 
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0< HTTP/1.1 200 OK
+< date: Wed, 26 Nov 2025 01:58:53 GMT
+< server: uvicorn
+< content-length: 1083
+< content-type: application/json
+< 
+{ [1083 bytes data]
+100  1083  100  1083    0     0   2025      0 --:--:-- --:--:-- --:--:--  2028
+* Connection #0 to host localhost left intact
+{"department":{"id":"snu-cse","name":"Computer Science and Engineering","name_ko":"컴퓨터공학부","website":"https://cse.snu.ac.kr"},"professors":[{"id":"183f707b-47df-4df1-9f39-d19b23504b62","name":"배준익","name_ko":"배준익","email":"unknown@ac.kr","profile_url":null,"research_interests":["人工智能"]},{"id":"2a7cc533-39e5-4be7-9580-604f04d2b3bd","name":"박연홍","name_ko":"박연홍","email":"unknown@ac.kr","profile_url":null,"research_interests":["机器学习"]},{"id":"2c2a69ce-9f54-4499-bdad-fe22ec447ad8","name":"송현오","name_ko":"송현오","email":"mailhyunoh@snu.ac.kr","profile_url":"https://mllab.snu.ac.kr/hyunoh/","research_interests":["Machine learning","Optimization","Robotics","Artificial intelligence"]}],"laboratories":[{"id":"90b038e8-f7f6-4872-8c76-8d616d5227e6","name":"未知实验室名称","description":"未提供实验室描述","professor_name":"배준익"},{"id":"82cee6aa-5780-4529-b9a9-b2d1fd1a1156","name":"머신러닝 연구실","description":"세부 정보는 제공되지 않았습니다.","professor_name":"송현오"}]}

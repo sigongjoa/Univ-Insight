@@ -377,10 +377,13 @@ class Report(Base):
     status = Column(SQLEnum(ReportStatus), default=ReportStatus.PENDING, nullable=False)
     notion_page_url = Column(String(255), nullable=True)
     report_type = Column(String(50), nullable=True)  # 'lab_summary', 'research_path', etc.
+    content = Column(Text, nullable=True)  # Full report content (markdown/html)
+    pdf_path = Column(String(255), nullable=True) # Path to generated PDF
 
     # Relationships
     user = relationship("User", back_populates="reports")
     papers = relationship("ReportPaper", back_populates="report", cascade="all, delete-orphan")
+    professors = relationship("ReportProfessor", back_populates="report", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Report(id={self.id}, user_id={self.user_id})>"
@@ -408,3 +411,24 @@ class ReportPaper(Base):
 
     def __repr__(self):
         return f"<ReportPaper(report_id={self.report_id}, paper_id={self.paper_id})>"
+
+
+class ReportProfessor(Base):
+    """
+    Junction table linking Reports and Professors.
+    
+    Table: report_professors
+    """
+    __tablename__ = "report_professors"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    report_id = Column(String(36), ForeignKey("reports.id"), nullable=False, index=True)
+    professor_id = Column(String(100), ForeignKey("professors.id"), nullable=False, index=True)
+    reason = Column(Text, nullable=True)  # Why this professor was recommended
+    relevance_score = Column(Float, nullable=True)
+
+    # Relationships
+    report = relationship("Report", back_populates="professors")
+    professor = relationship("Professor")
+
+    __table_args__ = (UniqueConstraint("report_id", "professor_id", name="uq_report_professor"),)

@@ -9,15 +9,18 @@ Implements endpoints for:
 """
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import FileResponse
+from src.services.pdf_generator import PDFGenerator
 from sqlalchemy.orm import Session
 from datetime import datetime
 from typing import List, Optional
 import uuid
+import ollama
 
 from src.core.database import get_db
 from src.domain.models import (
     University, College, Department, Professor, Laboratory, LabMember,
-    ResearchPaper, PaperAnalysis, User, Report, UserRole, ReportStatus, ReportPaper
+    ResearchPaper, PaperAnalysis, User, Report, UserRole, ReportStatus, ReportPaper, ReportProfessor
 )
 from src.services.recommendation import RecommendationService
 from src.services.vector_store import VectorStore
@@ -445,6 +448,54 @@ def get_university_papers(
     }
 
 
+@router.get("/departments/{dept_id}/research")
+def get_department_research(
+    dept_id: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Get organized research information (professors and labs) for a department.
+    """
+    dept = db.query(Department).filter(Department.id == dept_id).first()
+    if not dept:
+        raise HTTPException(status_code=404, detail="Department not found")
+
+    # Get professors
+    professors = db.query(Professor).filter(Professor.department_id == dept_id).all()
+    
+    # Get labs
+    labs = db.query(Laboratory).filter(Laboratory.department_id == dept_id).all()
+    
+    return {
+        "department": {
+            "id": dept.id,
+            "name": dept.name,
+            "name_ko": dept.name_ko,
+            "website": dept.website
+        },
+        "professors": [
+            {
+                "id": p.id,
+                "name": p.name,
+                "name_ko": p.name_ko,
+                "email": p.email,
+                "profile_url": p.profile_url,
+                "research_interests": p.research_interests
+            }
+            for p in professors
+        ],
+        "laboratories": [
+            {
+                "id": l.id,
+                "name": l.name,
+                "description": l.description,
+                "professor_name": l.professor.name if l.professor else None
+            }
+            for l in labs
+        ]
+    }
+
+
 
 @router.get("/papers/{paper_id}/analysis")
 def get_paper_analysis(
@@ -478,7 +529,6 @@ def get_paper_analysis(
             "industry_relevance": analysis.industry_relevance,
             "career_paths": analysis.career_paths,
             "recommended_companies": analysis.recommended_companies,
-            "salary_range": analysis.salary_range,
             "job_roles": analysis.job_roles,
             "recommended_subjects": analysis.recommended_subjects,
             "action_items": analysis.action_items,
@@ -489,76 +539,168 @@ def get_paper_analysis(
     }
 
 
-# ==================== Recommendations & Reports ====================
-
-@router.post("/reports/generate")
-def generate_personalized_report(
+@router.post("/users/{user_id}/reports")
+def create_report(
     user_id: str,
     db: Session = Depends(get_db)
 ):
     """
     Generate personalized report for a user based on interests.
-
-    Returns list of recommended papers and creates a report record.
+    Recommends professors and labs, and generates a summary using LLM.
     """
     # Get user
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Get recommendations
     if not user.interests:
         raise HTTPException(
             status_code=400,
             detail="User has no interests set"
         )
 
-    # Get papers matching user interests
-    papers = db.query(ResearchPaper).filter(
-        ResearchPaper.keywords.overlap(user.interests)
-    ).limit(5).all()
+    # 1. Find Professors matching interests
+    all_profs = db.query(Professor).all()
+    matched_profs = []
+    
+    for prof in all_profs:
+        score = 0
+        prof_interests = prof.research_interests or []
+        if isinstance(prof_interests, str):
+            prof_interests = [prof_interests]
+            
+        for user_interest in user.interests:
+            for prof_interest in prof_interests:
+                if user_interest.lower() in str(prof_interest).lower():
+                    score += 1
+        
+        if score > 0:
+            matched_profs.append((prof, score))
+    
+    # Sort by score
+    matched_profs.sort(key=lambda x: x[1], reverse=True)
+    top_profs = matched_profs[:5]
+    
+    if not top_profs:
+        # Fallback: Just pick some professors if no match found (for demo)
+        top_profs = [(p, 0) for p in all_profs[:3]]
 
-    if not papers:
-        raise HTTPException(
-            status_code=404,
-            detail="No matching papers found"
-        )
+    # 2. Generate Report Content with LLM
+    report_content = "Report generation failed."
+    try:
+        prof_summary = "\n".join([f"- {p.name} ({p.name_ko}): {p.research_interests}" for p, s in top_profs])
+        
+        prompt = f"""
+        You are an expert academic career consultant.
+        Create a personalized career guide report for a student interested in: {', '.join(user.interests)}.
+        
+        Based on the following recommended professors and their research areas:
+        {prof_summary}
+        
+        Write a comprehensive report in Korean (Markdown format) that includes:
+        1. **Analysis of Interests**: How the student's interests align with current research trends.
+        2. **Professor Recommendations**: Why these professors are good matches.
+        3. **Research Lab Guide**: What kind of research is done in their labs.
+        4. **Preparation Strategy**: What subjects or skills the student should study to join these labs.
+        
+        Tone: Encouraging, professional, and insightful.
+        """
+        
+        # Simple synchronous call for now
+        response = ollama.chat(model='qwen2:7b', messages=[{'role': 'user', 'content': prompt}])
+        report_content = response['message']['content']
+        
+    except Exception as e:
+        print(f"LLM Error: {e}")
+        report_content = f"AI 리포트 생성 중 오류가 발생했습니다.\n\n추천 교수님:\n{prof_summary}"
 
-    # Create report
+    # 3. Create report
     report = Report(
         id=str(uuid.uuid4()),
         user_id=user_id,
-        status=ReportStatus.SENT
+        status=ReportStatus.SENT,
+        content=report_content,
+        report_type="career_guide"
     )
     db.add(report)
     db.flush()
 
-    # Add papers to report (through ReportPaper junction table)
-    for idx, paper in enumerate(papers):
-        report_paper = ReportPaper(
+    # 4. Link Professors
+    for prof, score in top_profs:
+        rp = ReportProfessor(
             id=str(uuid.uuid4()),
             report_id=report.id,
-            paper_id=paper.id,
-            order_index=idx
+            professor_id=prof.id,
+            relevance_score=float(score),
+            reason=f"Matched interests: {user.interests}"
         )
-        db.add(report_paper)
+        db.add(rp)
 
     db.commit()
+
+    # 5. Generate PDF
+    pdf_url = None
+    try:
+        pdf_gen = PDFGenerator()
+        report_data = {
+            "user_name": user.name,
+            "interests": ", ".join(user.interests),
+            "report_date": datetime.now().strftime("%Y-%m-%d"),
+            "content": report_content,
+            "professors": [
+                {
+                    "name": p.name,
+                    "name_ko": p.name_ko,
+                    "interests": ", ".join(p.research_interests or []) if p.research_interests else "",
+                    "reason": "관심 분야 일치"
+                }
+                for p, s in top_profs
+            ]
+        }
+        
+        pdf_filename = f"report_{report.id}.pdf"
+        pdf_path = pdf_gen.generate(report_data, pdf_filename)
+        
+        report.pdf_path = pdf_path
+        db.commit()
+        pdf_url = f"/api/v1/reports/{report.id}/download"
+        
+    except Exception as e:
+        print(f"PDF Generation Failed: {e}")
+        import traceback
+        traceback.print_exc()
 
     return {
         "status": "success",
         "report_id": report.id,
-        "papers": [
+        "content": report_content,
+        "pdf_url": pdf_url,
+        "recommendations": [
             {
-                "paper_id": p.id,
-                "title": p.title,
-                "authors": p.authors,
-                "publication_year": p.publication_year,
-                "venue": p.venue
+                "professor": p.name,
+                "score": s,
+                "interests": p.research_interests
             }
-            for p in papers
+            for p, s in top_profs
         ]
     }
+
+
+@router.get("/reports/{report_id}/download")
+def download_report(
+    report_id: str,
+    db: Session = Depends(get_db)
+):
+    """Download report as PDF"""
+    report = db.query(Report).filter(Report.id == report_id).first()
+    if not report or not report.pdf_path:
+        raise HTTPException(status_code=404, detail="Report PDF not found")
+        
+    return FileResponse(
+        report.pdf_path, 
+        media_type="application/pdf", 
+        filename=f"UnivInsight_Report_{report_id[:8]}.pdf"
+    )
 
 
 @router.get("/reports/{report_id}")
@@ -577,6 +719,8 @@ def get_report(
         "user_id": report.user_id,
         "status": report.status.value,
         "sent_at": report.sent_at.isoformat(),
+        "content": report.content,
+        "report_type": report.report_type,
         "papers": [
             {
                 "paper_id": rp.paper.id,
@@ -587,6 +731,16 @@ def get_report(
                 "order": rp.order_index
             }
             for rp in report.papers
+        ],
+        "professors": [
+            {
+                "professor_id": rp.professor.id,
+                "name": rp.professor.name,
+                "name_ko": rp.professor.name_ko,
+                "relevance_score": rp.relevance_score,
+                "reason": rp.reason
+            }
+            for rp in report.professors
         ]
     }
 
@@ -685,13 +839,20 @@ def run_crawler_task(university_id: str, target_url: str, db_session_maker):
             else:
                 print(f"⚠️ University not found: {university_id}")
         else:
+            # This block might not be reached if crawl raises exception, which is good
             print("❌ Crawling failed - no result returned")
             
     except Exception as e:
-        print(f"❌ Error in crawler task: {str(e)}")
+        print(f"\n{'='*50}")
+        print(f"❌ CRITICAL ERROR IN CRAWLER TASK")
+        print(f"Target: {target_url} (Univ: {university_id})")
+        print(f"Error: {str(e)}")
+        print(f"{'='*50}\n")
         import traceback
         traceback.print_exc()
         db.rollback()
+        # Re-raise exception to ensure it's recorded as a task failure if monitored
+        raise e
     finally:
         db.close()
 
