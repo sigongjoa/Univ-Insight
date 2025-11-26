@@ -14,6 +14,20 @@ export interface University {
     college_count?: number
 }
 
+export interface Paper {
+    id: string
+    title: string
+    url?: string
+    abstract?: string
+    crawled_at?: string
+    keywords?: string[]
+}
+
+export interface PapersListResponse {
+    total_count: number
+    items: Paper[]
+}
+
 export interface UniversityListResponse {
     total_count: number
     items: University[]
@@ -40,6 +54,14 @@ export const universityService = {
      */
     getUniversity: async (id: string): Promise<University> => {
         const response = await apiClient.get(`/universities/${id}`)
+        return response.data
+    },
+
+    /**
+     * Get papers for a university
+     */
+    getPapers: async (id: string): Promise<PapersListResponse> => {
+        const response = await apiClient.get(`/universities/${id}/papers`)
         return response.data
     },
 

@@ -405,8 +405,45 @@ def get_research_paper(
         "doi": paper.doi,
         "url": paper.url,
         "pdf_url": paper.pdf_url,
-        "keywords": paper.keywords
     }
+
+
+@router.get("/universities/{uni_id}/papers")
+def get_university_papers(
+    uni_id: str,
+    limit: int = Query(20, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    db: Session = Depends(get_db)
+):
+    """
+    Get papers crawled for a specific university.
+    
+    Note: Currently papers are not directly linked to universities,
+    so we return all recently crawled papers as a demo.
+    In production, add a university_id field to ResearchPaper model.
+    """
+    # For now, return all papers ordered by crawl date
+    # TODO: Filter by university when schema is updated
+    query = db.query(ResearchPaper).order_by(ResearchPaper.crawled_at.desc())
+    
+    total_count = query.count()
+    papers = query.offset(offset).limit(limit).all()
+    
+    return {
+        "total_count": total_count,
+        "items": [
+            {
+                "id": p.id,
+                "title": p.title,
+                "url": p.url,
+                "abstract": p.abstract[:200] if p.abstract else None,
+                "crawled_at": p.crawled_at.isoformat() if p.crawled_at else None,
+                "keywords": p.keywords
+            }
+            for p in papers
+        ]
+    }
+
 
 
 @router.get("/papers/{paper_id}/analysis")
@@ -605,25 +642,58 @@ class CrawlRequest(BaseModel):
     university_id: str
     target_url: Optional[str] = None
 
-def run_crawler_task(university_id: str, target_url: str, db: Session):
+
+def run_crawler_task(university_id: str, target_url: str, db_session_maker):
     """Background task to run crawler"""
     print(f"Starting background crawl for {university_id} at {target_url}")
-    crawler = UniversityCrawler()
-    paper = crawler.crawl(target_url)
     
-    if paper:
-        # Save to DB
-        # Note: We need a fresh session or handle session scope carefully in background tasks
-        # For simplicity in this prototype, we'll just print success.
-        # In production, use a new session here.
-        print(f"Successfully crawled paper: {paper.title}")
+    # Create a new DB session for this background task
+    from src.core.database import SessionLocal
+    db = SessionLocal()
+    
+    try:
+        crawler = UniversityCrawler()
+        # Note: crawler.crawl returns a ResearchPaper schema object, not ORM model
+        result = crawler.crawl(target_url)
         
-        # Update paper with university info
-        # db_paper = ResearchPaper(...)
-        # db.add(db_paper)
-        # db.commit()
-    else:
-        print("Crawling failed")
+        if result:
+            print(f"Successfully crawled: {result.title}")
+            
+            # Get university to link the paper
+            university = db.query(University).filter(University.id == university_id).first()
+            
+            if university:
+                # Create ResearchPaper ORM model from schema
+                from src.domain.models import ResearchPaper
+                import uuid
+                
+                db_paper = ResearchPaper(
+                    id=str(uuid.uuid4()),
+                    lab_id=None,  # We don't have lab info yet
+                    title=result.title,
+                    authors=[],  # Will be extracted later
+                    abstract=result.content_raw[:500] if result.content_raw else None,
+                    url=result.url,
+                    keywords=[],
+                    full_text=result.content_raw,
+                    crawled_at=result.crawled_at
+                )
+                
+                db.add(db_paper)
+                db.commit()
+                print(f"✅ Saved paper to DB: {db_paper.id}")
+            else:
+                print(f"⚠️ University not found: {university_id}")
+        else:
+            print("❌ Crawling failed - no result returned")
+            
+    except Exception as e:
+        print(f"❌ Error in crawler task: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        db.rollback()
+    finally:
+        db.close()
 
 @router.post("/admin/crawl")
 def trigger_crawler(

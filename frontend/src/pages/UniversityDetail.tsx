@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { universityService, type University } from '../services/universityService'
+import { universityService, type University, type Paper } from '../services/universityService'
 import './UniversityDetail.css'
 
 export default function UniversityDetail() {
@@ -12,10 +12,13 @@ export default function UniversityDetail() {
     const [crawlUrl, setCrawlUrl] = useState('')
     const [crawling, setCrawling] = useState(false)
     const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error' | 'info', text: string } | null>(null)
+    const [papers, setPapers] = useState<Paper[]>([])
+    const [loadingPapers, setLoadingPapers] = useState(false)
 
     useEffect(() => {
         if (id) {
             loadUniversity(id)
+            loadPapers(id)
         }
     }, [id])
 
@@ -32,6 +35,18 @@ export default function UniversityDetail() {
         }
     }
 
+    const loadPapers = async (uniId: string) => {
+        setLoadingPapers(true)
+        try {
+            const data = await universityService.getPapers(uniId)
+            setPapers(data.items)
+        } catch (error) {
+            console.error("Failed to load papers:", error)
+        } finally {
+            setLoadingPapers(false)
+        }
+    }
+
     const handleCrawl = async () => {
         if (!id || !crawlUrl) return
 
@@ -42,13 +57,20 @@ export default function UniversityDetail() {
             const result = await universityService.crawlUniversity(id, crawlUrl)
             setStatusMessage({
                 type: 'success',
-                text: `Crawl job queued successfully! Status: ${result.status}`
+                text: `Crawl job queued successfully! Status: ${result.status}. Refresh papers in a few moments.`
             })
         } catch (error) {
             console.error("Failed to start crawl:", error)
             setStatusMessage({ type: 'error', text: 'Failed to start crawl job' })
         } finally {
             setCrawling(false)
+        }
+    }
+
+    const handleRefreshPapers = () => {
+        if (id) {
+            loadPapers(id)
+            setStatusMessage({ type: 'info', text: 'Refreshing papers...' })
         }
     }
 
@@ -122,6 +144,40 @@ export default function UniversityDetail() {
                 {statusMessage && (
                     <div className={`status-message ${statusMessage.type}`}>
                         {statusMessage.text}
+                    </div>
+                )}
+            </div>
+
+            <div className="papers-section">
+                <h2>📚 Crawled Papers</h2>
+                <button className="refresh-button" onClick={handleRefreshPapers} disabled={loadingPapers}>
+                    {loadingPapers ? 'Loading...' : '🔄 Refresh Papers'}
+                </button>
+
+                {papers.length > 0 ? (
+                    <div className="papers-list">
+                        {papers.map(paper => (
+                            <div key={paper.id} className="paper-card">
+                                <h3 className="paper-title">{paper.title}</h3>
+                                {paper.abstract && (
+                                    <p className="paper-abstract">{paper.abstract}</p>
+                                )}
+                                <div className="paper-meta">
+                                    {paper.url && (
+                                        <a href={paper.url} target="_blank" rel="noopener noreferrer">
+                                            🔗 View Paper
+                                        </a>
+                                    )}
+                                    {paper.crawled_at && (
+                                        <span>📅 Crawled: {new Date(paper.crawled_at).toLocaleDateString()}</span>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="no-papers">
+                        No papers crawled yet. Start a crawl job above to see results here.
                     </div>
                 )}
             </div>
