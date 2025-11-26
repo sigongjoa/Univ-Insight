@@ -21,12 +21,29 @@ class ActionItem(BaseModel):
     subjects: List[str]
     research_topic: str
 
+class DeepDive(BaseModel):
+    keywords: List[str]
+    recommendations: List[str]
+    related_concepts: List[str]
+
 class AnalysisResult(BaseModel):
     paper_id: str
-    title: str
-    research_summary: str
+    topic_easy: str
+    topic_technical: str
+    explanation: str
+    reference_link: str
+    deep_dive: DeepDive
     career_path: CareerPath
     action_item: ActionItem
+    
+    # Backward compatibility (optional, or just map new fields to old ones if needed)
+    @property
+    def title(self):
+        return self.topic_easy
+
+    @property
+    def research_summary(self):
+        return self.explanation
 
 
 class DepartmentInfo(BaseModel):

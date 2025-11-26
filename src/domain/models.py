@@ -288,8 +288,15 @@ class PaperAnalysis(Base):
     paper_id = Column(String(100), ForeignKey("research_papers.id"), nullable=False, unique=True, index=True)
 
     # Summary and main content
-    easy_summary = Column(Text, nullable=False)  # Simple explanation
-    technical_summary = Column(Text, nullable=True)  # Technical details
+    easy_summary = Column(Text, nullable=False)  # Simple explanation (Legacy/Fallback)
+    technical_summary = Column(Text, nullable=True)  # Technical details (Legacy/Fallback)
+    
+    # Progressive Disclosure Fields (New)
+    topic_easy = Column(String(255), nullable=True) # "인공지능의 눈과 입 연결하기"
+    topic_technical = Column(String(255), nullable=True) # "Vision-Language Grounding"
+    explanation = Column(Text, nullable=True) # Main explanation
+    reference_link = Column(String(500), nullable=True)
+    deep_dive = Column(JSON, default=dict, nullable=True) # {keywords: [], recommendations: [], related_concepts: []}
 
     # Core technologies and skills
     core_technologies = Column(JSON, default=list, nullable=False)  # ["PyTorch", "CUDA", "Vision Transformer"]

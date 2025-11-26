@@ -1,0 +1,81 @@
+{
+  "user_name": "경영학 관심 학생",
+  "interests": "Business, Management, Finance",
+  "report_date": "2025-11-26",
+  "analysis_results": [
+    {
+      "topic_easy": "노상규 교수님의 연구: 경영정보",
+      "topic_technical": "(Management Information)",
+      "explanation": "이 연구는 기업에서 운영하는 정보를 어떻게 사용하고, 분석하여 사업을 향상시키는 방법에 대한 것입니다. 이는 우리가 일상 생활에서도 자주 사용하는 데이터와 통계를 기반으로 하는 결정을 내리는 것을 생각해 볼 수 있습니다.",
+      "reference_link": "(Google Scholar Search: Management Information)",
+      "deep_dive": {
+        "keywords": [
+          "Business Information",
+          "Data Analysis",
+          "Management Strategies"
+        ],
+        "recommendations": [
+          "The Effect of Business Information on Decision Making",
+          "Strategies for Effective Data Utilization in Management"
+        ],
+        "related_concepts": [
+          "Quantitative Reasoning",
+          "Information Technology"
+        ]
+      },
+      "career_path": {
+        "job_title": "Management Consultant / Business Analyst",
+        "companies": [
+          "Consulting Firms",
+          "Corporate Strategy Departments"
+        ],
+        "avg_salary_hint": "$80k+"
+      },
+      "action_item": {
+        "subjects": [
+          "Economics",
+          "Statistics"
+        ],
+        "research_topic": "A study on the impact of digital tools in business decision-making processes."
+      },
+      "professor_name": "노상규"
+    },
+    {
+      "topic_easy": "전략적 경영정보의 비밀",
+      "topic_technical": "경영정보 (Business Information)",
+      "explanation": "이 연구는 어떻게 기업이 정보를 사용하고 의사결정을 내릴 수 있는지에 대해 다룹니다. 예를 들어, 편의점에서는 매일 팔린 물품의 정보를 통해 어떤 제품이 인기인지 알 수 있습니다.",
+      "reference_link": "Google Scholar Search: [경영정보]",
+      "deep_dive": {
+        "keywords": [
+          "기업 전략",
+          "데이터 분석",
+          "정보 시스템"
+        ],
+        "recommendations": [
+          "최고 기업 정보 관리 전문가의 가르침",
+          "제일 중요한 경영 정보 도서 10권"
+        ],
+        "related_concepts": [
+          "기초 통계학",
+          "컴퓨터 과학"
+        ]
+      },
+      "career_path": {
+        "job_title": "경영 정보 분석사",
+        "companies": [
+          "기업 컨설팅 기업",
+          "정보 시스템 회사"
+        ],
+        "avg_salary_hint": "$80k+"
+      },
+      "action_item": {
+        "subjects": [
+          "통계학",
+          "컴퓨터 과학"
+        ],
+        "research_topic": "기업의 정보 사용과 의사결정을 조율하는 방법 연구"
+      },
+      "professor_name": "유병준"
+    }
+  ]
+}

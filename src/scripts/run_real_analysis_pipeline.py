@@ -77,6 +77,15 @@ def analyze_paper_with_ollama(paper: ResearchPaper) -> dict:
             "data": {
                 "title": analysis_result.title,
                 "research_summary": analysis_result.research_summary,
+                "topic_easy": analysis_result.topic_easy,
+                "topic_technical": analysis_result.topic_technical,
+                "explanation": analysis_result.explanation,
+                "reference_link": analysis_result.reference_link,
+                "deep_dive": {
+                    "keywords": analysis_result.deep_dive.keywords,
+                    "recommendations": analysis_result.deep_dive.recommendations,
+                    "related_concepts": analysis_result.deep_dive.related_concepts
+                },
                 "career_paths": analysis_result.career_path.companies,
                 "job_title": analysis_result.career_path.job_title,
                 "salary_hint": analysis_result.career_path.avg_salary_hint,
@@ -107,14 +116,21 @@ def save_analysis_to_db(paper: ResearchPaper, analysis_data: dict) -> bool:
             id=str(uuid.uuid4()),
             paper_id=paper.id,
 
-            # Summary
-            easy_summary=data.get("research_summary", ""),
+            # Legacy Summary (for backward compatibility)
+            easy_summary=data.get("explanation", data.get("research_summary", "")),
             technical_summary=f"Technical analysis of {paper.title}",
+            
+            # Progressive Disclosure Fields (New)
+            topic_easy=data.get("topic_easy", ""),
+            topic_technical=data.get("topic_technical", ""),
+            explanation=data.get("explanation", ""),
+            reference_link=data.get("reference_link", ""),
+            deep_dive=data.get("deep_dive", {}),
 
             # Core technologies
-            core_technologies=_extract_technologies(data.get("research_summary", "")),
+            core_technologies=_extract_technologies(data.get("explanation", data.get("research_summary", ""))),
             required_skills=["Programming", "Mathematics", "Data Analysis", "System Design"],
-            math_concepts=["Linear Algebra", "Statistics", "Calculus", "Probability"],
+            math_concepts=data.get("deep_dive", {}).get("related_concepts", []) if data.get("deep_dive") else [],
 
             # Application
             application_fields=["Technology", "Industry Applications", "Research"],

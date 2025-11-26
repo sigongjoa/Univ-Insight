@@ -159,10 +159,36 @@ def get_department(
                 "email": p.email,
                 "h_index": p.h_index,
                 "publications_count": p.publications_count,
-                "lab_count": len(p.laboratories)
+                "lab_count": len(p.laboratories),
+                "research_preview": _get_research_preview(p, db)  # NEW: Easy preview
             }
             for p in department.professors
         ]
+    }
+
+
+def _get_research_preview(professor: Professor, db: Session) -> dict:
+    """Get a preview of professor's research in easy-to-understand language"""
+    # Find the first analyzed paper
+    for lab in professor.laboratories:
+        for paper in lab.papers[:1]:  # Just the first paper
+            analysis = db.query(PaperAnalysis).filter(PaperAnalysis.paper_id == paper.id).first()
+            if analysis and analysis.topic_easy:
+                return {
+                    "topic_easy": analysis.topic_easy,
+                    "explanation_preview": analysis.explanation[:200] + "..." if analysis.explanation and len(analysis.explanation) > 200 else analysis.explanation
+                }
+    
+    # Fallback to research interests
+    if professor.research_interests:
+        return {
+            "topic_easy": ", ".join(professor.research_interests[:2]),
+            "explanation_preview": "이 분야의 연구를 진행하고 있습니다."
+        }
+    
+    return {
+        "topic_easy": "연구 정보 준비 중",
+        "explanation_preview": ""
     }
 
 
@@ -171,11 +197,30 @@ def get_professor(
     prof_id: str,
     db: Session = Depends(get_db)
 ):
-    """Get professor and their laboratories"""
+    """Get professor and their laboratories with easy-to-understand research explanations"""
     professor = db.query(Professor).filter(Professor.id == prof_id).first()
 
     if not professor:
         raise HTTPException(status_code=404, detail="Professor not found")
+
+    # Get research analysis for this professor's papers
+    research_explanations = []
+    
+    for lab in professor.laboratories:
+        for paper in lab.papers[:3]:  # Top 3 papers per lab
+            # Check if we have analysis
+            analysis = db.query(PaperAnalysis).filter(PaperAnalysis.paper_id == paper.id).first()
+            
+            if analysis and analysis.topic_easy:
+                research_explanations.append({
+                    "topic_easy": analysis.topic_easy,
+                    "topic_technical": analysis.topic_technical,
+                    "explanation": analysis.explanation,
+                    "reference_link": analysis.reference_link,
+                    "deep_dive": analysis.deep_dive,
+                    "paper_title": paper.title,
+                    "paper_id": paper.id
+                })
 
     return {
         "id": professor.id,
@@ -187,6 +232,7 @@ def get_professor(
         "email": professor.email,
         "phone": professor.phone,
         "research_interests": professor.research_interests,
+        "research_explanations": research_explanations,  # NEW: Easy explanations
         "education": professor.education,
         "h_index": professor.h_index,
         "publications_count": professor.publications_count,
@@ -585,42 +631,91 @@ def create_report(
         # Fallback: Just pick some professors if no match found (for demo)
         top_profs = [(p, 0) for p in all_profs[:3]]
 
-    # 2. Generate Report Content with LLM
-    report_content = "Report generation failed."
+    # 2. Generate Report Content with LLM (Progressive Disclosure)
+    from src.services.llm import OllamaLLM, MockLLM
+    from src.domain.schemas import ResearchPaper as SchemaResearchPaper
+    
+    analysis_results = []
+    report_content = "" # Fallback content
+
     try:
-        prof_summary = "\n".join([f"- {p.name} ({p.name_ko}): {p.research_interests}" for p, s in top_profs])
-        
-        prompt = f"""
-        You are an expert academic career consultant.
-        Create a personalized career guide report for a student interested in: {', '.join(user.interests)}.
-        
-        Based on the following recommended professors and their research areas:
-        {prof_summary}
-        
-        Write a comprehensive report in Korean (Markdown format) that includes:
-        1. **Analysis of Interests**: How the student's interests align with current research trends.
-        2. **Professor Recommendations**: Why these professors are good matches.
-        3. **Research Lab Guide**: What kind of research is done in their labs.
-        4. **Preparation Strategy**: What subjects or skills the student should study to join these labs.
-        
-        Tone: Encouraging, professional, and insightful.
-        """
-        
-        # Simple synchronous call for now
-        response = ollama.chat(model='qwen2:7b', messages=[{'role': 'user', 'content': prompt}])
-        report_content = response['message']['content']
-        
-    except Exception as e:
-        print(f"LLM Error: {e}")
-        report_content = f"AI 리포트 생성 중 오류가 발생했습니다.\n\n추천 교수님:\n{prof_summary}"
+        llm = OllamaLLM(model='qwen2.5:14b') # Use high quality model
+        # Check if we can connect, else fallback
+        # In production, we might want a better check or dependency injection
+    except:
+        llm = MockLLM()
+
+    print(f"Generating report for {len(top_profs)} professors...")
+
+    for prof, score in top_profs:
+        try:
+            # Try to find a real paper
+            target_paper = None
+            
+            # Look for papers in professor's labs
+            for lab in prof.laboratories:
+                if lab.papers:
+                    # Pick the most recent or relevant paper
+                    # For now, just pick the first one
+                    db_paper = lab.papers[0]
+                    target_paper = SchemaResearchPaper(
+                        id=db_paper.id,
+                        url=db_paper.url or "",
+                        title=db_paper.title,
+                        university=prof.department.college.university.name,
+                        department=prof.department.name,
+                        pub_date=db_paper.publication_date,
+                        content_raw=db_paper.abstract or db_paper.title
+                    )
+                    break
+            
+            # If no paper found, create a virtual one from interests
+            if not target_paper:
+                interests_str = ", ".join(prof.research_interests) if prof.research_interests else "General AI"
+                target_paper = SchemaResearchPaper(
+                    id=f"prof-{prof.id}-virtual",
+                    url="",
+                    title=f"{prof.name} 교수님의 연구: {interests_str}",
+                    university=prof.department.college.university.name if prof.department else "Unknown",
+                    department=prof.department.name if prof.department else "Unknown",
+                    content_raw=f"Research interests include: {interests_str}. {prof.bio or ''}"
+                )
+
+            # Analyze
+            print(f"Analyzing for {prof.name}: {target_paper.title}")
+            try:
+                result = llm.analyze(target_paper)
+            except Exception as e:
+                print(f"LLM Analysis failed for {prof.name}, using Mock: {e}")
+                mock_llm = MockLLM()
+                result = mock_llm.analyze(target_paper)
+                
+            # Add professor name to the result for the report context
+            # We might need to inject this into the result or handle it in the template
+            # For now, let's assume the template uses the fields we have.
+            # We can prepend the professor name to the topic_easy if needed, 
+            # or better, add it to the report_data structure below.
+            
+            # Convert Pydantic model to dict for JSON serialization
+            result_dict = result.dict()
+            result_dict["professor_name"] = prof.name
+            result_dict["professor_id"] = prof.id
+            analysis_results.append(result_dict)
+
+        except Exception as e:
+            print(f"Error processing professor {prof.name}: {e}")
+            continue
 
     # 3. Create report
+    # We'll store a simple summary in the content field for fallback/preview
+    report_content = f"맞춤형 리포트가 생성되었습니다. {len(analysis_results)}개의 연구 분야 분석이 포함되어 있습니다."
+
     report = Report(
         id=str(uuid.uuid4()),
         user_id=user_id,
         status=ReportStatus.SENT,
         content=report_content,
-        report_type="career_guide"
+        report_type="career_guide_progressive"
     )
     db.add(report)
     db.flush()
@@ -642,20 +737,14 @@ def create_report(
     pdf_url = None
     try:
         pdf_gen = PDFGenerator()
+        
+        # Prepare data for Typst template
+        # The template expects 'analysis_results'
         report_data = {
             "user_name": user.name,
             "interests": ", ".join(user.interests),
             "report_date": datetime.now().strftime("%Y-%m-%d"),
-            "content": report_content,
-            "professors": [
-                {
-                    "name": p.name,
-                    "name_ko": p.name_ko,
-                    "interests": ", ".join(p.research_interests or []) if p.research_interests else "",
-                    "reason": "관심 분야 일치"
-                }
-                for p, s in top_profs
-            ]
+            "analysis_results": analysis_results
         }
         
         pdf_filename = f"report_{report.id}.pdf"

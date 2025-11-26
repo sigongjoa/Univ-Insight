@@ -1,0 +1,189 @@
+{
+  "main_url": "https://www.snu.ac.kr",
+  "college_links": [
+    {
+      "text": "서울대학교",
+      "url": "https://www.snu.ac.kr/index.html"
+    },
+    {
+      "text": "교육",
+      "url": "https://www.snu.ac.kr/academics/undergraduate/snucollege"
+    },
+    {
+      "text": "대학",
+      "url": "https://www.snu.ac.kr/academics/undergraduate/snucollege"
+    },
+    {
+      "text": "학부대학",
+      "url": "https://www.snu.ac.kr/academics/undergraduate/snucollege"
+    },
+    {
+      "text": "대학",
+      "url": "https://www.snu.ac.kr/academics/undergraduate/colleges"
+    },
+    {
+      "text": "대학원",
+      "url": "https://www.snu.ac.kr/academics/graduate/graduate_schools"
+    },
+    {
+      "text": "일반대학원",
+      "url": "https://www.snu.ac.kr/academics/graduate/graduate_schools"
+    },
+    {
+      "text": "전문대학원",
+      "url": "https://www.snu.ac.kr/academics/graduate/professional_graduate_schools"
+    },
+    {
+      "text": "대학",
+      "url": "https://admission.snu.ac.kr/undergraduate/notice"
+    },
+    {
+      "text": "대학원",
+      "url": "https://admission.snu.ac.kr/graduate/general/notice"
+    },
+    {
+      "text": "일반대학원",
+      "url": "https://admission.snu.ac.kr/graduate/general/notice"
+    },
+    {
+      "text": "전문대학원",
+      "url": "https://admission.snu.ac.kr/graduate/professional/notice"
+    },
+    {
+      "text": "예비 대학원생",
+      "url": "https://admission.snu.ac.kr/graduate/prospective"
+    },
+    {
+      "text": "대학원",
+      "url": "https://admission.snu.ac.kr/international/graduate/spring/guide"
+    },
+    {
+      "text": "대학생활",
+      "url": "https://www.snu.ac.kr/campuslife/communities/volunteer"
+    },
+    {
+      "text": "대학생활문화원",
+      "url": "https://www.snu.ac.kr/campuslife/aid/programs"
+    },
+    {
+      "text": "교직원행정",
+      "url": "https://www.snu.ac.kr/academics/resources/staff/faculty_certificates"
+    },
+    {
+      "text": "대학소개",
+      "url": "https://www.snu.ac.kr/about/overview/vision"
+    },
+    {
+      "text": "대학현황",
+      "url": "https://www.snu.ac.kr/about/overview/vision"
+    },
+    {
+      "text": "대학상징",
+      "url": "https://www.snu.ac.kr/about/symbol/ui"
+    }
+  ],
+  "org_links": [
+    {
+      "text": "연구성과",
+      "url": "https://www.snu.ac.kr/research/highlights?sc=y"
+    },
+    {
+      "text": "학사신입",
+      "url": "https://admission.snu.ac.kr/international/undergraduate/spring/guide"
+    },
+    {
+      "text": "학사행정",
+      "url": "https://www.snu.ac.kr/academics/resources/calendar"
+    },
+    {
+      "text": "학사일정",
+      "url": "https://www.snu.ac.kr/academics/resources/calendar"
+    },
+    {
+      "text": "조직도",
+      "url": "https://www.snu.ac.kr/about/overview/organization/sub_organ"
+    },
+    {
+      "text": "연구성과",
+      "url": "https://www.snu.ac.kr/research/highlights"
+    },
+    {
+      "text": "학사신입",
+      "url": "https://admission.snu.ac.kr/international/undergraduate/spring/guide"
+    },
+    {
+      "text": "학사일정",
+      "url": "https://www.snu.ac.kr/academics/resources/calendar"
+    },
+    {
+      "text": "조직도",
+      "url": "https://www.snu.ac.kr/about/overview/organization/sub_organ"
+    },
+    {
+      "text": "연구성과",
+      "url": "https://www.snu.ac.kr//www.snu.ac.kr/research/highlights?sc=y"
+    }
+  ],
+  "engineering_dept_links": [
+    {
+      "text": "학과/부별 동창회",
+      "url": "https://eng.snu.ac.kr/snu/main/contents.do?menuNo=200069"
+    },
+    {
+      "text": "학과/학부",
+      "url": "https://eng.snu.ac.kr/snu/main/contents.do?menuNo=200077"
+    },
+    {
+      "text": "건축학과(건축학,건축공학)",
+      "url": "https://eng.snu.ac.kr/snu/main/contents.do?menuNo=200078"
+    },
+    {
+      "text": "산업공학과",
+      "url": "https://eng.snu.ac.kr/snu/main/contents.do?menuNo=200080"
+    },
+    {
+      "text": "에너지자원공학과",
+      "url": "https://eng.snu.ac.kr/snu/main/contents.do?menuNo=200081"
+    },
+    {
+      "text": "원자핵공학과",
+      "url": "https://eng.snu.ac.kr/snu/main/contents.do?menuNo=200082"
+    },
+    {
+      "text": "조선해양공학과",
+      "url": "https://eng.snu.ac.kr/snu/main/contents.do?menuNo=200085"
+    },
+    {
+      "text": "항공우주공학과",
+      "url": "https://eng.snu.ac.kr/snu/main/contents.do?menuNo=200087"
+    },
+    {
+      "text": "건축학과(건축학,건축공학)",
+      "url": "https://eng.snu.ac.kr/snu/main/contents.do?menuNo=200090"
+    },
+    {
+      "text": "산업공학과",
+      "url": "https://eng.snu.ac.kr/snu/main/contents.do?menuNo=200092"
+    },
+    {
+      "text": "조선해양공학과",
+      "url": "https://eng.snu.ac.kr/snu/main/contents.do?menuNo=200096"
+    },
+    {
+      "text": "항공우주공학과",
+      "url": "https://eng.snu.ac.kr/snu/main/contents.do?menuNo=200098"
+    },
+    {
+      "text": "협동과정 기술경영경제정책전공",
+      "url": "https://eng.snu.ac.kr/snu/main/contents.do?menuNo=200100"
+    },
+    {
+      "text": "협동과정 도시설계학전공",
+      "url": "https://eng.snu.ac.kr/snu/main/contents.do?menuNo=200101"
+    },
+    {
+      "text": "협동과정 바이오엔지니어링전공",
+      "url": "https://eng.snu.ac.kr/snu/main/contents.do?menuNo=200102"
+    }
+  ]
+}

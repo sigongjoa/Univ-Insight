@@ -1,0 +1,65 @@
+[
+  {
+    "name_ko": "서울대학교",
+    "name": "서울대학교",
+    "url": "https://www.snu.ac.kr/index.html",
+    "departments": [
+      {
+        "name_ko": "학부대학",
+        "name": "학부대학",
+        "url": "https://www.snu.ac.kr/academics/undergraduate/snucollege",
+        "professors": [],
+        "faculty_url": "https://www.snu.ac.kr/academics/programs/learning_support"
+      },
+      {
+        "name_ko": "계약학과",
+        "name": "계약학과",
+        "url": "https://admission.snu.ac.kr/graduate/vocational-contract-program/notice",
+        "professors": [],
+        "faculty_url": "https://www.snu.ac.kr/academics/programs/learning_support"
+      }
+    ]
+  },
+  {
+    "name_ko": "학부대학",
+    "name": "학부대학",
+    "url": "https://www.snu.ac.kr/academics/undergraduate/snucollege",
+    "departments": [
+      {
+        "name_ko": "학부대학",
+        "name": "학부대학",
+        "url": "https://www.snu.ac.kr/academics/undergraduate/snucollege",
+        "professors": [],
+        "faculty_url": "https://www.snu.ac.kr/academics/programs/learning_support"
+      },
+      {
+        "name_ko": "계약학과",
+        "name": "계약학과",
+        "url": "https://admission.snu.ac.kr/graduate/vocational-contract-program/notice",
+        "professors": [],
+        "faculty_url": "https://www.snu.ac.kr/academics/programs/learning_support"
+      }
+    ]
+  },
+  {
+    "name_ko": "일반대학원",
+    "name": "일반대학원",
+    "url": "https://www.snu.ac.kr/academics/graduate/graduate_schools",
+    "departments": [
+      {
+        "name_ko": "학부대학",
+        "name": "학부대학",
+        "url": "https://www.snu.ac.kr/academics/undergraduate/snucollege",
+        "professors": [],
+        "faculty_url": "https://www.snu.ac.kr/academics/programs/learning_support"
+      },
+      {
+        "name_ko": "계약학과",
+        "name": "계약학과",
+        "url": "https://admission.snu.ac.kr/graduate/vocational-contract-program/notice",
+        "professors": [],
+        "faculty_url": "https://www.snu.ac.kr/academics/programs/learning_support"
+      }
+    ]
+  }
+]
